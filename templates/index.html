@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Quiz</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #84ddd6c7;
+    margin: 0;
+    padding: 0;
+    color: #000000;
+  }
+
+  /* Top navigation bar */
+  #navbar {
+    background-color: #49ccb0;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #034555;
+    
+  }
+  #navbar a {
+    margin-right: 15px;
+    text-decoration: underline;
+    color: #0a0a0a;
+    cursor: pointer;
+  }
+  #navbar a:hover {
+    color: rgba(0, 4, 255, 0.493);
+    border-radius: 20px;
+  }
+  #navbar a:hover{
+    color: rgba(0, 4, 255, 0.493);
+    border-radius: 20px;
+  }
+  #navbar .title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #000000;
+  }
+
+  /* Main content area */
+  .box {
+    max-width: 900px;
+    margin: 30px auto;
+    background: #78e4aec0;
+    align-content: center;
+    padding: 20px;
+    border: 1px solid #08441f;
+    border-radius: 20px;
+    border-color:green 20px;
+    justify-content: center;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  /* Simple grid for quiz cards */
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  .quiz-box {
+    border: 1px solid #0e0d0d;
+    border-radius: 5px;
+    padding: 15px;
+    width: 260px;
+    background: #6ec3c9;
+  }
+
+  /* Buttons */
+  button, .btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 5px;
+    margin-top: 5px;
+    display: inline-block;
+    text-decoration: none;
+  }
+  .btn-blue { background-color: #337ab7; color: white; }
+  .btn-green { background-color: #4CAF50; color: white; }
+  .btn-red { background-color: #d9534f; color: white; }
+  .btn-gray { background-color: #eee; color: #333; border: 1px solid #ccc; }
+
+  /* Forms */
+  input[type=text], input[type=password], input[type=number], input[type=file], textarea, select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  label {
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+  th {
+    background-color: #eee;
+  }
+  tr.highlight {
+    background-color: #fff8c4;
+  }
+
+  /* Small tags for status */
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: white;
+  }
+  .tag-admin { background: purple; }
+  .tag-instructor { background: teal; }
+  .tag-student { background: green; }
+  .tag-pending { background: orange; }
+  .tag-approved { background: green; }
+  .tag-rejected { background: red; }
+
+  /* Flash messages */
+  #flash {
+    max-width: 900px;
+    margin: 10px auto 0 auto;
+  }
+  .msg {
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  .msg-success { background: #dff0d8; color: #3c763d; }
+  .msg-danger  { background: #f2dede; color: #a94442; }
+  .msg-warning { background: #fcf8e3; color: #8a6d3b; }
+  .msg-info    { background: #d9edf7; color: #31708f; }
+
+  /* Question box on take-quiz page */
+  .question {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 5px;
+  }
+  .option {
+    padding: 5px 0;
+  }
+
+  .timer {
+    background: #fffbcc;
+    padding: 10px;
+    border: 1px solid #e0d900;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .center {
+    text-align: center;
+  }
+
+  .score-box {
+    font-size: 30px;
+    font-weight: bold;
+    border: 5px solid #337ab7;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    line-height: 110px;
+    margin: 20px auto;
+  }
+</style>
+</head>
+<body>
+
+<div id="navbar"></div>
+<div id="flash"></div>
+<div id="app"></div>
+
+<script>
+
+// ---------- global state ----------
+var currentUser = null;
+
+// ---------- helper: call the API ----------
+function callApi(method, url, body, isFile) {
+  var options = { method: method, credentials: 'same-origin', headers: {} };
+  if (body) {
+    if (isFile) {
+      options.body = body;
+    } else {
+      options.headers['Content-Type'] = 'application/json';
+      options.body = JSON.stringify(body);
+    }
+  }
+  return fetch(url, options).then(function (res) {
+    return res.json().catch(function () { return {}; }).then(function (data) {
+      if (!res.ok) {
+        showMessage(data.error || 'Something went wrong', 'danger');
+        throw new Error(data.error || 'error');
+      }
+      return data;
+    });
+  });
+}
+
+// ---------- helper: show a flash message ----------
+function showMessage(text, type) {
+  var flash = document.getElementById('flash');
+  var div = document.createElement('div');
+  div.className = 'msg msg-' + type;
+  div.textContent = text;
+  flash.appendChild(div);
+  setTimeout(function () { div.remove(); }, 4000);
+}
+
+// ---------- helper: escape text so it's safe to put in HTML ----------
+function esc(text) {
+  if (text === null || text === undefined) return '';
+  var div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ---------- go to a different "page" ----------
+function goTo(hash) {
+  window.location.hash = hash;
+}
+
+// ---------- set the content of the main app div ----------
+function setContent(html) {
+  document.getElementById('app').innerHTML = html;
+}
+
+// ---------- draw the top navbar based on who is logged in ----------
+function drawNavbar() {
+  var nav = document.getElementById('navbar');
+  var linksHtml = '';
+
+  if (currentUser) {
+    if (currentUser.role === 'admin') {
+      linksHtml += '<a onclick="goTo(\'#/admin\')">Dashboard</a>';
+      linksHtml += '<a onclick="goTo(\'#/admin/instructors\')">Instructors</a>';
+      linksHtml += '<a onclick="goTo(\'#/admin/quizzes\')">Quizzes</a>';
+      linksHtml += '<a onclick="goTo(\'#/admin/results\')">Results</a>';
+    } else if (currentUser.role === 'instructor') {
+      if (currentUser.status === 'approved') {
+        linksHtml += '<a onclick="goTo(\'#/instructor\')">My Quizzes</a>';
+        linksHtml += '<a onclick="goTo(\'#/instructor/new\')">New Quiz</a>';
+      }
+    } else {
+      linksHtml += '<a onclick="goTo(\'#/student\')">Quizzes</a>';
+      linksHtml += '<a onclick="goTo(\'#/student/results\')">My Results</a>';
+    }
+    linksHtml += '<span class="tag tag-' + currentUser.role + '">' + currentUser.role + '</span> ';
+    if (currentUser.role === 'instructor') {
+      linksHtml += '<span class="tag tag-' + currentUser.status + '">' + currentUser.status + '</span> ';
+    }
+    linksHtml += '<b>' + esc(currentUser.username) + '</b> ';
+    linksHtml += '<a onclick="logout()">Logout</a>';
+  } else {
+    linksHtml += '<a onclick="goTo(\'#/login\')">Login</a>';
+    linksHtml += '<a class="btn btn-blue" onclick="goTo(\'#/register\')">Sign Up</a>';
+  }
+
+  nav.innerHTML = '<span class="title">E-Quiz / Online Quiz Management System</span><div>' + linksHtml + '</div>';
+}
+
+function logout() {
+  callApi('POST', '/api/logout').then(function () {
+    currentUser = null;
+    drawNavbar();
+    goTo('#/');
+  });
+}
+
+// ---------- ROUTER ----------
+// Looks at the URL hash and decides what to show
+window.addEventListener('hashchange', router);
+window.addEventListener('DOMContentLoaded', function () {
+  callApi('GET', '/api/me').then(function (data) {
+    currentUser = data.user;
+  }).catch(function () {
+    currentUser = null;
+  }).then(function () {
+    drawNavbar();
+    router();
+  });
+});
+
+function router() {
+  var hash = window.location.hash || '#/';
+
+  // block pages that need login
+  var needsLogin = hash.indexOf('#/admin') === 0 || hash.indexOf('#/instructor') === 0 || hash.indexOf('#/student') === 0;
+  if (needsLogin && !currentUser) {
+    goTo('#/login');
+    return;
+  }
+
+  if (hash === '#/' || hash === '') {
+    if (currentUser) {
+      if (currentUser.role === 'admin') return goTo('#/admin');
+      if (currentUser.role === 'instructor') return goTo(currentUser.status === 'approved' ? '#/instructor' : '#/instructor/pending');
+      return goTo('#/student');
+    }
+    return showHomePage();
+  }
+
+  if (hash === '#/login') return showLoginPage();
+  if (hash === '#/register') return showRegisterPage();
+
+  if (hash === '#/admin') return showAdminDashboard();
+  if (hash === '#/admin/instructors') return showAdminInstructors();
+  if (hash === '#/admin/quizzes') return showAdminQuizzes();
+  if (hash === '#/admin/results') return showAdminResults();
+
+  if (hash === '#/instructor/pending') return showPendingPage();
+  if (hash === '#/instructor') {
+    if (currentUser.status !== 'approved') return goTo('#/instructor/pending');
+    return showInstructorDashboard();
+  }
+  if (hash === '#/instructor/new') return showQuizForm(null);
+
+  var match;
+  if ((match = hash.match(/^#\/instructor\/edit\/(\d+)$/))) return showQuizForm(match[1]);
+  if ((match = hash.match(/^#\/instructor\/questions\/(\d+)$/))) return showQuestionsPage(match[1]);
+  if ((match = hash.match(/^#\/instructor\/addquestion\/(\d+)$/))) return showAddQuestionPage(match[1]);
+  if ((match = hash.match(/^#\/instructor\/upload\/(\d+)$/))) return showUploadPage(match[1]);
+  if ((match = hash.match(/^#\/instructor\/leaderboard\/(\d+)$/))) return showLeaderboard(match[1], '/api/instructor/quizzes/' + match[1] + '/leaderboard');
+
+  if (hash === '#/student') return showStudentDashboard();
+  if (hash === '#/student/results') return showMyResults();
+  if ((match = hash.match(/^#\/student\/take\/(\d+)$/))) return showTakeQuizPage(match[1]);
+  if ((match = hash.match(/^#\/leaderboard\/(\d+)$/))) return showLeaderboard(match[1], '/api/quizzes/' + match[1] + '/leaderboard');
+
+  setContent('<div class="box"><p>Page not found.</p></div>');
+}
+
+// ===================================================
+// HOME / LOGIN / REGISTER
+// ===================================================
+
+function showHomePage() {
+  setContent(
+    '<div class="box center">' +
+    '<h1>Welcome to the Quiz Management System</h1>' +
+    '<p>Admins approve instructors, instructors create quizzes, and students take them and see their rank.</p>' +
+    '<a class="btn btn-blue" onclick="goTo(\'#/register\')">Sign Up</a>' +
+    '<a class="btn btn-gray" onclick="goTo(\'#/login\')">Login</a>' +
+    '</div>'
+  );
+}
+
+function showLoginPage() {
+  setContent(
+    '<div class="box" style="max-width:400px;">' +
+    '<h1>Login</h1>' +
+    '<form id="loginForm">' +
+    '<label>Username</label>' +
+    '<input type="text" id="loginUsername" required>' +
+    '<label>Password</label>' +
+    '<input type="password" id="loginPassword" required>' +
+    '<button type="submit" class="btn btn-blue">Login</button>' +
+    '</form>' +
+    '<p>No account? <a onclick="goTo(\'#/register\')">Sign up here</a></p>' +
+    '</div>'
+  );
+
+  document.getElementById('loginForm').onsubmit = function (e) {
+    e.preventDefault();
+    var username = document.getElementById('loginUsername').value;
+    var password = document.getElementById('loginPassword').value;
+
+    callApi('POST', '/api/login', { username: username, password: password }).then(function (data) {
+      currentUser = data.user;
+      drawNavbar();
+      showMessage('Welcome back, ' + data.user.username + '!', 'success');
+      if (currentUser.role === 'instructor' && currentUser.status !== 'approved') {
+        goTo('#/instructor/pending');
+      } else {
+        goTo('#/');
+      }
+    });
+  };
+}
+
+function showRegisterPage() {
+  setContent(
+    '<div class="box" style="max-width:400px;">' +
+    '<h1>Sign Up</h1>' +
+    '<form id="registerForm">' +
+    '<label>Username</label>' +
+    '<input type="text" id="regUsername" required>' +
+    '<label>Password</label>' +
+    '<input type="password" id="regPassword" required>' +
+    '<label>Confirm Password</label>' +
+    '<input type="password" id="regConfirm" required>' +
+    '<label>I am a:</label><br>' +
+    '<input type="radio" name="role" value="student" checked> Student &nbsp;' +
+    '<input type="radio" name="role" value="instructor"> Instructor' +
+    '<p style="font-size:13px;color:#666;">Note: instructor accounts need admin approval before you can log in.</p>' +
+    '<button type="submit" class="btn btn-blue">Sign Up</button>' +
+    '</form>' +
+    '<p>Already have an account? <a onclick="goTo(\'#/login\')">Login</a></p>' +
+    '</div>'
+  );
+
+  document.getElementById('registerForm').onsubmit = function (e) {
+    e.preventDefault();
+    var role = document.querySelector('input[name=role]:checked').value;
+    callApi('POST', '/api/register', {
+      username: document.getElementById('regUsername').value,
+      password: document.getElementById('regPassword').value,
+      confirm_password: document.getElementById('regConfirm').value,
+      role: role
+    }).then(function (data) {
+      showMessage(data.message, 'success');
+      goTo('#/login');
+    });
+  };
+}
+
+function showPendingPage() {
+  var rejected = currentUser.status === 'rejected';
+  setContent(
+    '<div class="box center">' +
+    '<h1>' + (rejected ? 'Account Rejected' : 'Waiting for Approval') + '</h1>' +
+    '<p>' + (rejected ?
+      'Your instructor account was rejected. Please contact the admin.' :
+      'An admin needs to approve your instructor account before you can create quizzes.') + '</p>' +
+    '<a class="btn btn-gray" onclick="logout()">Logout</a>' +
+    '</div>'
+  );
+}
+
+// ===================================================
+// ADMIN PAGES
+// ===================================================
+
+function showAdminDashboard() {
+  callApi('GET', '/api/admin/stats').then(function (s) {
+    setContent(
+      '<div class="box">' +
+      '<h1>Admin Dashboard</h1>' +
+      '<p>Pending instructors: <b>' + s.pending_count + '</b></p>' +
+      '<p>Approved instructors: <b>' + s.instructor_count + '</b></p>' +
+      '<p>Students: <b>' + s.student_count + '</b></p>' +
+      '<p>Quizzes: <b>' + s.quiz_count + '</b></p>' +
+      '<p>Quiz attempts: <b>' + s.attempt_count + '</b></p>' +
+      '<a class="btn btn-blue" onclick="goTo(\'#/admin/instructors\')">Manage Instructors</a>' +
+      '<a class="btn btn-blue" onclick="goTo(\'#/admin/quizzes\')">View Quizzes</a>' +
+      '<a class="btn btn-blue" onclick="goTo(\'#/admin/results\')">View Results</a>' +
+      '</div>'
+    );
+  });
+}
+
+function showAdminInstructors() {
+  callApi('GET', '/api/admin/instructors').then(function (data) {
+    var rows = '';
+    data.instructors.forEach(function (i) {
+      var actionButtons = '';
+      if (i.status === 'pending') {
+        actionButtons = '<button class="btn btn-green" onclick="approveInstructor(' + i.id + ')">Approve</button>' +
+                         '<button class="btn btn-red" onclick="rejectInstructor(' + i.id + ')">Reject</button>';
+      } else if (i.status === 'approved') {
+        actionButtons = '<button class="btn btn-red" onclick="rejectInstructor(' + i.id + ')">Revoke</button>';
+      } else {
+        actionButtons = '<button class="btn btn-green" onclick="approveInstructor(' + i.id + ')">Approve</button>';
+      }
+      rows += '<tr><td>' + esc(i.username) + '</td>' +
+              '<td><span class="tag tag-' + i.status + '">' + i.status + '</span></td>' +
+              '<td>' + i.quiz_count + '</td>' +
+              '<td>' + i.created_at + '</td>' +
+              '<td>' + actionButtons + '</td></tr>';
+    });
+
+    setContent(
+      '<div class="box">' +
+      '<h1>Instructors</h1>' +
+      (data.instructors.length ?
+        '<table><tr><th>Username</th><th>Status</th><th>Quizzes</th><th>Registered</th><th>Action</th></tr>' + rows + '</table>' :
+        '<p>No instructors have registered yet.</p>') +
+      '</div>'
+    );
+  });
+}
+
+function approveInstructor(id) {
+  callApi('POST', '/api/admin/instructors/' + id + '/approve').then(function () {
+    showMessage('Instructor approved.', 'success');
+    showAdminInstructors();
+  });
+}
+
+function rejectInstructor(id) {
+  if (!confirm('Are you sure?')) return;
+  callApi('POST', '/api/admin/instructors/' + id + '/reject').then(function () {
+    showMessage('Instructor rejected.', 'info');
+    showAdminInstructors();
+  });
+}
+
+function showAdminQuizzes() {
+  callApi('GET', '/api/admin/quizzes').then(function (data) {
+    var boxes = '';
+    data.quizzes.forEach(function (q) {
+      boxes += '<div class="quiz-box">' +
+               '<h3>' + esc(q.title) + (q.is_default ? ' <span class="tag tag-approved">default</span>' : '') + '</h3>' +
+               '<p>' + esc(q.description || 'No description') + '</p>' +
+               '<p>Questions: ' + q.question_count + (q.time_limit_minutes ? ' | Timer: ' + q.time_limit_minutes + ' min' : '') + '</p>' +
+               '<p>By: ' + esc(q.instructor_name || 'System') + '</p>' +
+               '<button class="btn btn-red" onclick="deleteQuizAsAdmin(' + q.id + ')">Delete</button>' +
+               '</div>';
+    });
+    setContent('<div class="box"><h1>All Quizzes</h1><div class="grid">' + boxes + '</div></div>');
+  });
+}
+
+function deleteQuizAsAdmin(id) {
+  if (!confirm('Delete this quiz?')) return;
+  callApi('DELETE', '/api/admin/quizzes/' + id).then(function () {
+    showMessage('Quiz deleted.', 'info');
+    showAdminQuizzes();
+  });
+}
+
+function showAdminResults() {
+  callApi('GET', '/api/admin/results').then(function (data) {
+    var rows = '';
+    data.results.forEach(function (r) {
+      var pct = ((r.score / r.total_questions) * 100).toFixed(1);
+      rows += '<tr><td>' + esc(r.username) + '</td><td>' + esc(r.quiz_title) + '</td>' +
+              '<td>' + r.score + '/' + r.total_questions + '</td><td>' + pct + '%</td>' +
+              '<td>' + (r.time_taken_seconds != null ? r.time_taken_seconds + 's' : '-') + '</td>' +
+              '<td>' + r.taken_at + '</td></tr>';
+    });
+    setContent(
+      '<div class="box"><h1>All Results</h1>' +
+      (data.results.length ?
+        '<table><tr><th>Student</th><th>Quiz</th><th>Score</th><th>%</th><th>Time</th><th>Date</th></tr>' + rows + '</table>' :
+        '<p>No attempts yet.</p>') +
+      '</div>'
+    );
+  });
+}
+
+// ===================================================
+// INSTRUCTOR PAGES
+// ===================================================
+
+function showInstructorDashboard() {
+  callApi('GET', '/api/instructor/quizzes').then(function (data) {
+    var boxes = '';
+    data.quizzes.forEach(function (q) {
+      boxes += '<div class="quiz-box">' +
+               '<h3>' + esc(q.title) + '</h3>' +
+               '<p>' + esc(q.description || 'No description') + '</p>' +
+               '<p>Questions: ' + q.question_count + ' | Timer: ' + (q.time_limit_minutes ? q.time_limit_minutes + ' min' : 'none') + '</p>' +
+               '<button class="btn btn-blue" onclick="goTo(\'#/instructor/questions/' + q.id + '\')">Questions</button>' +
+               '<button class="btn btn-gray" onclick="goTo(\'#/instructor/edit/' + q.id + '\')">Edit</button>' +
+               '<button class="btn btn-gray" onclick="goTo(\'#/instructor/leaderboard/' + q.id + '\')">Leaderboard</button>' +
+               '<button class="btn btn-red" onclick="deleteMyQuiz(' + q.id + ')">Delete</button>' +
+               '</div>';
+    });
+    setContent(
+      '<div class="box"><h1>My Quizzes</h1>' +
+      '<a class="btn btn-blue" onclick="goTo(\'#/instructor/new\')">+ New Quiz</a>' +
+      '<div class="grid" style="margin-top:15px;">' + (boxes || '<p>You have not made any quizzes yet.</p>') + '</div>' +
+      '</div>'
+    );
+  });
+}
+
+function deleteMyQuiz(id) {
+  if (!confirm('Delete this quiz and all its questions/results?')) return;
+  callApi('DELETE', '/api/instructor/quizzes/' + id).then(function () {
+    showMessage('Quiz deleted.', 'info');
+    showInstructorDashboard();
+  });
+}
+
+function showQuizForm(quizId) {
+  // if editing, we first need to fetch the quiz's current info
+  var loadQuiz = quizId ? callApi('GET', '/api/instructor/quizzes/' + quizId + '/questions') : Promise.resolve(null);
+
+  loadQuiz.then(function (data) {
+    var quiz = data ? data.quiz : null;
+
+    setContent(
+      '<div class="box" style="max-width:500px;">' +
+      '<h1>' + (quiz ? 'Edit Quiz' : 'New Quiz') + '</h1>' +
+      '<form id="quizForm">' +
+      '<label>Title</label>' +
+      '<input type="text" id="quizTitle" value="' + (quiz ? esc(quiz.title) : '') + '" required>' +
+      '<label>Description</label>' +
+      '<textarea id="quizDesc">' + (quiz ? esc(quiz.description || '') : '') + '</textarea>' +
+      '<label>Time Limit in minutes (leave blank for no timer)</label>' +
+      '<input type="number" id="quizTimer" min="1" value="' + (quiz && quiz.time_limit_minutes ? quiz.time_limit_minutes : '') + '">' +
+      '<button type="submit" class="btn btn-blue">' + (quiz ? 'Save' : 'Create') + '</button>' +
+      '<button type="button" class="btn btn-gray" onclick="goTo(\'#/instructor\')">Cancel</button>' +
+      '</form>' +
+      '</div>'
+    );
+
+    document.getElementById('quizForm').onsubmit = function (e) {
+      e.preventDefault();
+      var payload = {
+        title: document.getElementById('quizTitle').value,
+        description: document.getElementById('quizDesc').value,
+        time_limit_minutes: document.getElementById('quizTimer').value
+      };
+      if (quiz) {
+        callApi('PUT', '/api/instructor/quizzes/' + quizId, payload).then(function () {
+          showMessage('Quiz updated.', 'success');
+          goTo('#/instructor/questions/' + quizId);
+        });
+      } else {
+        callApi('POST', '/api/instructor/quizzes', payload).then(function (res) {
+          showMessage('Quiz created. Now add some questions.', 'success');
+          goTo('#/instructor/questions/' + res.quiz_id);
+        });
+      }
+    };
+  });
+}
+
+function showQuestionsPage(quizId) {
+  callApi('GET', '/api/instructor/quizzes/' + quizId + '/questions').then(function (data) {
+    var quiz = data.quiz;
+    var qHtml = '';
+    data.questions.forEach(function (q, index) {
+      qHtml += '<div class="question">' +
+               '<b>Q' + (index + 1) + '.</b> ' + esc(q.question_text) +
+               ' <button class="btn btn-red" style="float:right;" onclick="deleteQuestion(' + q.id + ',' + quizId + ')">Delete</button>' +
+               '<div class="option">A. ' + esc(q.option_a) + (q.correct_option === 'A' ? ' ✔ correct' : '') + '</div>' +
+               '<div class="option">B. ' + esc(q.option_b) + (q.correct_option === 'B' ? ' ✔ correct' : '') + '</div>' +
+               '<div class="option">C. ' + esc(q.option_c) + (q.correct_option === 'C' ? ' ✔ correct' : '') + '</div>' +
+               '<div class="option">D. ' + esc(q.option_d) + (q.correct_option === 'D' ? ' ✔ correct' : '') + '</div>' +
+               '</div>';
+    });
+
+    setContent(
+      '<div class="box">' +
+      '<h1>' + esc(quiz.title) + '</h1>' +
+      '<p>' + esc(quiz.description || '') + '</p>' +
+      (quiz.time_limit_minutes ? '<p>Timer: ' + quiz.time_limit_minutes + ' minutes</p>' : '') +
+      '<a class="btn btn-blue" onclick="goTo(\'#/instructor/addquestion/' + quizId + '\')">+ Add Question</a>' +
+      '<a class="btn btn-gray" onclick="goTo(\'#/instructor/upload/' + quizId + '\')">Upload CSV</a>' +
+      '<div style="margin-top:15px;">' + (qHtml || '<p>No questions yet.</p>') + '</div>' +
+      '<a onclick="goTo(\'#/instructor\')">&laquo; Back to My Quizzes</a>' +
+      '</div>'
+    );
+  });
+}
+
+function deleteQuestion(questionId, quizId) {
+  if (!confirm('Delete this question?')) return;
+  callApi('DELETE', '/api/instructor/questions/' + questionId).then(function () {
+    showMessage('Question deleted.', 'info');
+    showQuestionsPage(quizId);
+  });
+}
+
+function showAddQuestionPage(quizId) {
+  setContent(
+    '<div class="box" style="max-width:500px;">' +
+    '<h1>Add Question</h1>' +
+    '<form id="questionForm">' +
+    '<label>Question</label>' +
+    '<textarea id="qText" required></textarea>' +
+    '<label>Option A</label><input type="text" id="qA" required>' +
+    '<label>Option B</label><input type="text" id="qB" required>' +
+    '<label>Option C</label><input type="text" id="qC" required>' +
+    '<label>Option D</label><input type="text" id="qD" required>' +
+    '<label>Correct Option</label>' +
+    '<select id="qCorrect"><option>A</option><option>B</option><option>C</option><option>D</option></select>' +
+    '<button type="submit" class="btn btn-blue">Add</button>' +
+    '<button type="button" class="btn btn-gray" onclick="goTo(\'#/instructor/questions/' + quizId + '\')">Done</button>' +
+    '</form>' +
+    '</div>'
+  );
+
+  document.getElementById('questionForm').onsubmit = function (e) {
+    e.preventDefault();
+    callApi('POST', '/api/instructor/quizzes/' + quizId + '/questions', {
+      question_text: document.getElementById('qText').value,
+      option_a: document.getElementById('qA').value,
+      option_b: document.getElementById('qB').value,
+      option_c: document.getElementById('qC').value,
+      option_d: document.getElementById('qD').value,
+      correct_option: document.getElementById('qCorrect').value
+    }).then(function () {
+      showMessage('Question added.', 'success');
+      goTo('#/instructor/questions/' + quizId);
+    });
+  };
+}
+
+function showUploadPage(quizId) {
+  setContent(
+    '<div class="box" style="max-width:500px;">' +
+    '<h1>Upload Questions (CSV)</h1>' +
+    '<form id="uploadForm">' +
+    '<input type="file" id="csvFile" accept=".csv" required>' +
+    '<button type="submit" class="btn btn-blue">Upload</button>' +
+    '</form>' +
+    '<p style="font-size:13px; margin-top:15px;">The CSV needs these exact column headers:</p>' +
+    '<p style="font-family:monospace; background:#f5f5f5; padding:10px; font-size:12px;">' +
+    'question_text,option_a,option_b,option_c,option_d,correct_option</p>' +
+    '<p style="font-size:13px;">correct_option should be A, B, C, or D.</p>' +
+    '<a onclick="goTo(\'#/instructor/questions/' + quizId + '\')">&laquo; Back</a>' +
+    '</div>'
+  );
+
+  document.getElementById('uploadForm').onsubmit = function (e) {
+    e.preventDefault();
+    var fileInput = document.getElementById('csvFile');
+    if (!fileInput.files.length) return;
+    var formData = new FormData();
+    formData.append('csv_file', fileInput.files[0]);
+    callApi('POST', '/api/instructor/quizzes/' + quizId + '/questions/upload', formData, true).then(function (res) {
+      showMessage(res.message, 'success');
+      if (res.errors && res.errors.length) {
+        showMessage(res.errors.length + ' rows skipped. ' + res.errors.slice(0, 3).join(' | '), 'warning');
+      }
+      goTo('#/instructor/questions/' + quizId);
+    });
+  };
+}
+
+// ===================================================
+// LEADERBOARD (used by instructor, student, and admin views)
+// ===================================================
+
+function showLeaderboard(quizId, url) {
+  callApi('GET', url).then(function (data) {
+    var title = data.quiz ? data.quiz.title : 'Quiz';
+    var myId = currentUser ? currentUser.id : null;
+    var rows = '';
+    data.leaderboard.forEach(function (row) {
+      var pct = ((row.score / row.total_questions) * 100).toFixed(1);
+      var isMe = myId && row.user_id === myId;
+      rows += '<tr class="' + (isMe ? 'highlight' : '') + '">' +
+              '<td>#' + row.rank + '</td>' +
+              '<td>' + esc(row.username) + (isMe ? ' (you)' : '') + '</td>' +
+              '<td>' + row.score + '/' + row.total_questions + '</td>' +
+              '<td>' + pct + '%</td>' +
+              '<td>' + (row.time_taken_seconds != null ? row.time_taken_seconds + 's' : '-') + '</td>' +
+              '<td>' + (row.taken_at || '') + '</td></tr>';
+    });
+
+    setContent(
+      '<div class="box"><h1>Leaderboard - ' + esc(title) + '</h1>' +
+      (data.leaderboard.length ?
+        '<table><tr><th>Rank</th><th>Student</th><th>Score</th><th>%</th><th>Time</th><th>Date</th></tr>' + rows + '</table>' :
+        '<p>No one has taken this quiz yet.</p>') +
+      '</div>'
+    );
+  });
+}
+
+// ===================================================
+// STUDENT PAGES
+// ===================================================
+
+function showStudentDashboard() {
+  callApi('GET', '/api/student/quizzes').then(function (data) {
+    var boxes = '';
+    data.quizzes.forEach(function (q) {
+      boxes += '<div class="quiz-box">' +
+               '<h3>' + esc(q.title) + (q.is_default ? ' <span class="tag tag-approved">default</span>' : '') + '</h3>' +
+               '<p>' + esc(q.description || 'No description') + '</p>' +
+               '<p>Questions: ' + q.question_count + (q.time_limit_minutes ? ' | Timer: ' + q.time_limit_minutes + ' min' : '') + '</p>' +
+               (q.taken ?
+                 '<span class="tag tag-approved">Completed</span> <button class="btn btn-gray" onclick="goTo(\'#/student/take/' + q.id + '\')">Retake</button>' :
+                 '<button class="btn btn-blue" onclick="goTo(\'#/student/take/' + q.id + '\')">Start Quiz</button>') +
+               ' <button class="btn btn-gray" onclick="goTo(\'#/leaderboard/' + q.id + '\')">Leaderboard</button>' +
+               '</div>';
+    });
+    setContent('<div class="box"><h1>Available Quizzes</h1><div class="grid">' + (boxes || '<p>No quizzes available right now.</p>') + '</div></div>');
+  });
+}
+
+function showTakeQuizPage(quizId) {
+  callApi('GET', '/api/student/quizzes/' + quizId).then(function (data) {
+    var quiz = data.quiz;
+    var questions = data.questions;
+
+    var qHtml = '';
+    questions.forEach(function (q, index) {
+      qHtml += '<div class="question">' +
+               '<b>Q' + (index + 1) + '.</b> ' + esc(q.question_text) +
+               '<div class="option"><label><input type="radio" name="q' + q.id + '" value="A"> A. ' + esc(q.option_a) + '</label></div>' +
+               '<div class="option"><label><input type="radio" name="q' + q.id + '" value="B"> B. ' + esc(q.option_b) + '</label></div>' +
+               '<div class="option"><label><input type="radio" name="q' + q.id + '" value="C"> C. ' + esc(q.option_c) + '</label></div>' +
+               '<div class="option"><label><input type="radio" name="q' + q.id + '" value="D"> D. ' + esc(q.option_d) + '</label></div>' +
+               '</div>';
+    });
+
+    setContent(
+      '<div class="box">' +
+      (quiz.time_limit_minutes ? '<div class="timer">Time left: <span id="timeLeft">' + quiz.time_limit_minutes + ':00</span></div>' : '') +
+      '<h1>' + esc(quiz.title) + '</h1>' +
+      '<form id="takeForm">' + qHtml + '<button type="submit" class="btn btn-blue">Submit Quiz</button></form>' +
+      '</div>'
+    );
+
+    var startTime = Date.now();
+    var alreadySubmitted = false;
+
+    function submitQuiz() {
+      if (alreadySubmitted) return;
+      alreadySubmitted = true;
+      var answers = {};
+      questions.forEach(function (q) {
+        var picked = document.querySelector('input[name=q' + q.id + ']:checked');
+        if (picked) answers[q.id] = picked.value;
+      });
+      var timeTaken = Math.floor((Date.now() - startTime) / 1000);
+      callApi('POST', '/api/student/quizzes/' + quizId + '/submit', { answers: answers, time_taken_seconds: timeTaken })
+        .then(function (result) {
+          showResultPage(quiz, result);
+        })
+        .catch(function () { alreadySubmitted = false; });
+    }
+
+    document.getElementById('takeForm').onsubmit = function (e) {
+      e.preventDefault();
+      submitQuiz();
+    };
+
+    if (quiz.time_limit_minutes) {
+      var secondsLeft = quiz.time_limit_minutes * 60;
+      var timeLeftEl = document.getElementById('timeLeft');
+      var timer = setInterval(function () {
+        secondsLeft--;
+        if (secondsLeft <= 0) {
+          clearInterval(timer);
+          timeLeftEl.textContent = '0:00';
+          submitQuiz();
+          return;
+        }
+        var mins = Math.floor(secondsLeft / 60);
+        var secs = secondsLeft % 60;
+        timeLeftEl.textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
+      }, 1000);
+    }
+  });
+}
+
+function showResultPage(quiz, result) {
+  setContent(
+    '<div class="box center">' +
+    '<h1>' + esc(quiz.title) + '</h1>' +
+    '<div class="score-box">' + result.score + '/' + result.total + '</div>' +
+    '<p>You scored ' + result.percentage + '%</p>' +
+    (result.rank ? '<p>Your rank: #' + result.rank + ' out of ' + result.total_participants + '</p>' : '') +
+    '<button class="btn btn-blue" onclick="goTo(\'#/student\')">Back to Quizzes</button>' +
+    '<button class="btn btn-gray" onclick="goTo(\'#/leaderboard/' + quiz.id + '\')">View Leaderboard</button>' +
+    '</div>'
+  );
+}
+
+function showMyResults() {
+  callApi('GET', '/api/student/results').then(function (data) {
+    var rows = '';
+    data.results.forEach(function (r) {
+      var pct = ((r.score / r.total_questions) * 100).toFixed(1);
+      rows += '<tr><td>' + esc(r.quiz_title) + '</td><td>' + r.score + '/' + r.total_questions + '</td>' +
+              '<td>' + pct + '%</td><td>' + (r.time_taken_seconds != null ? r.time_taken_seconds + 's' : '-') + '</td>' +
+              '<td>' + r.taken_at + '</td>' +
+              '<td><a onclick="goTo(\'#/leaderboard/' + r.quiz_id + '\')">View</a></td></tr>';
+    });
+    setContent(
+      '<div class="box"><h1>My Results</h1>' +
+      (data.results.length ?
+        '<table><tr><th>Quiz</th><th>Score</th><th>%</th><th>Time</th><th>Date</th><th>Leaderboard</th></tr>' + rows + '</table>' :
+        '<p>You have not taken any quizzes yet.</p>') +
+      '</div>'
+    );
+  });
+}
+
+</script>
+</body>
+</html>

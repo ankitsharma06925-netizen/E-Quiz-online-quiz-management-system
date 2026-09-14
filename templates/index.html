@@ -3,192 +3,353 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>E-Quiz</title>
+<title>E-Quiz &mdash; Online Quiz Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #84ddd6c7;
-    margin: 0;
-    padding: 0;
-    color: #000000;
+  :root {
+    --white: #ffffff;
+    --sky: #4aa3d8;
+    --sky-dark: #2c7dad;
+    --sky-light: #eaf6fc;
+    --sky-border: #cfe8f4;
+    --orange: #f39c4e;
+    --orange-dark: #dd7f2c;
+    --orange-light: #fff2e2;
+    --orange-border: #fbdcb2;
+    --ink: #26313d;
+    --ink-soft: #5b6b78;
+    --danger: #d76a5a;
+    --danger-light: #fbe8e5;
+    --border: #e1ecf1;
+    --page-bg: var(--sky-light);
+    --surface: var(--white);
+    --radius: 10px;
+    --shadow: 0 2px 10px rgba(38, 49, 61, 0.06);
+    --transition-theme: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   }
 
-  /* Top navigation bar */
+  /* ---------- Dark mode overrides ---------- */
+  html[data-theme="dark"] {
+    --white: #1e2530;
+    --sky: #4aa3d8;
+    --sky-dark: #7ec4ea;
+    --sky-light: #223142;
+    --sky-border: #2d4054;
+    --orange: #f39c4e;
+    --orange-dark: #ffb066;
+    --orange-light: #3a2c1e;
+    --orange-border: #55402a;
+    --ink: #eef2f5;
+    --ink-soft: #a9b6c1;
+    --danger: #e07e6f;
+    --danger-light: #3d2621;
+    --border: #333f4d;
+    --page-bg: #151b23;
+    --surface: #1e2530;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { transition: var(--transition-theme); }
+
+  body {
+    font-family: 'Inter', Arial, sans-serif;
+    background-color: var(--page-bg);
+    margin: 0;
+    padding: 0;
+    color: var(--ink);
+    line-height: 1.5;
+    transition: var(--transition-theme);
+  }
+
+  h1, h2, h3 {
+    font-family: 'Poppins', 'Inter', sans-serif;
+    color: var(--ink);
+    margin: 0 0 6px 0;
+  }
+
+  h1 { font-size: 22px; font-weight: 600; }
+  h3 { font-size: 16px; font-weight: 600; }
+
+  p { color: var(--ink-soft); margin: 0 0 12px 0; font-size: 14px; }
+
+  a { color: var(--sky-dark); cursor: pointer; }
+
+  /* ---------- Top navigation bar ---------- */
   #navbar {
-    background-color: #49ccb0;
-    padding: 10px 20px;
+    background-color: var(--white);
+    padding: 14px 28px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #034555;
-    
-  }
-  #navbar a {
-    margin-right: 15px;
-    text-decoration: underline;
-    color: #0a0a0a;
-    cursor: pointer;
-  }
-  #navbar a:hover {
-    color: rgba(0, 4, 255, 0.493);
-    border-radius: 20px;
-  }
-  #navbar a:hover{
-    color: rgba(0, 4, 255, 0.493);
-    border-radius: 20px;
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    flex-wrap: wrap;
+    gap: 10px;
   }
   #navbar .title {
-    font-size: 20px;
-    font-weight: bold;
-    color: #000000;
+    font-family: 'Poppins', sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.2px;
   }
-
-  /* Main content area */
-  .box {
-    max-width: 900px;
-    margin: 30px auto;
-    background: #78e4aec0;
-    align-content: center;
-    padding: 20px;
-    border: 1px solid #08441f;
-    border-radius: 20px;
-    border-color:green 20px;
-    justify-content: center;
+  #navbar .title::before {
+    content: "";
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--orange);
+    margin-right: 9px;
   }
-
-  h1 {
-    font-size: 22px;
-  }
-
-  /* Simple grid for quiz cards */
-  .grid {
+  #navbar > div {
     display: flex;
+    align-items: center;
+    gap: 4px;
     flex-wrap: wrap;
-    gap: 15px;
   }
-  .quiz-box {
-    border: 1px solid #0e0d0d;
-    border-radius: 5px;
-    padding: 15px;
-    width: 260px;
-    background: #6ec3c9;
-  }
-
-  /* Buttons */
-  button, .btn {
-    padding: 8px 14px;
-    border: none;
-    border-radius: 4px;
+  #navbar a {
+    padding: 7px 12px;
+    text-decoration: none;
+    color: var(--ink-soft);
     cursor: pointer;
     font-size: 14px;
-    margin-right: 5px;
-    margin-top: 5px;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  #navbar a:hover {
+    background-color: var(--sky-light);
+    color: var(--sky-dark);
+  }
+  #navbar a.btn {
+    color: var(--white);
+  }
+
+  /* ---------- Flash messages ---------- */
+  #flash {
+    max-width: 960px;
+    margin: 16px auto 0 auto;
+    padding: 0 20px;
+  }
+  .msg {
+    padding: 11px 14px;
+    margin-bottom: 8px;
+    border-radius: var(--radius);
+    font-size: 13.5px;
+    font-weight: 500;
+    border: 1px solid transparent;
+  }
+  .msg-success { background: var(--sky-light); color: var(--sky-dark); border-color: var(--sky-border); }
+  .msg-danger  { background: var(--danger-light); color: #a8392a; border-color: #f3c7bf; }
+  .msg-warning { background: var(--orange-light); color: var(--orange-dark); border-color: var(--orange-border); }
+  .msg-info    { background: var(--sky-light); color: var(--sky-dark); border-color: var(--sky-border); }
+
+  /* ---------- Main content area ---------- */
+  .box {
+    max-width: 960px;
+    margin: 24px auto;
+    background: var(--white);
+    padding: 28px 30px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+  }
+
+  /* ---------- Grid for quiz cards ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+  }
+  .quiz-box {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    background: var(--white);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .quiz-box:hover {
+    border-color: var(--sky-border);
+    box-shadow: var(--shadow);
+  }
+
+  /* ---------- Buttons ---------- */
+  button, .btn {
+    padding: 9px 16px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    margin-right: 6px;
+    margin-top: 6px;
     display: inline-block;
     text-decoration: none;
+    transition: filter 0.15s ease, transform 0.05s ease;
   }
-  .btn-blue { background-color: #337ab7; color: white; }
-  .btn-green { background-color: #4CAF50; color: white; }
-  .btn-red { background-color: #d9534f; color: white; }
-  .btn-gray { background-color: #eee; color: #333; border: 1px solid #ccc; }
+  button:hover, .btn:hover { filter: brightness(0.95); }
+  button:active, .btn:active { transform: translateY(1px); }
+  button:focus-visible, .btn:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 2px solid var(--sky-dark);
+    outline-offset: 2px;
+  }
 
-  /* Forms */
+  .btn-blue  { background-color: var(--sky); color: var(--white); }
+  .btn-green { background-color: var(--orange); color: var(--white); }
+  .btn-red   { background-color: var(--danger); color: var(--white); }
+  .btn-gray  { background-color: var(--white); color: var(--ink-soft); border: 1px solid var(--border); }
+
+  /* ---------- Forms ---------- */
   input[type=text], input[type=password], input[type=number], input[type=file], textarea, select {
     width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 10px 12px;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
     font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    background: var(--white);
+    color: var(--ink);
     box-sizing: border-box;
+    transition: border-color 0.15s ease;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--sky);
   }
   label {
-    font-weight: bold;
-    font-size: 14px;
+    font-weight: 600;
+    font-size: 13.5px;
+    color: var(--ink);
   }
 
-  /* Tables */
+  /* ---------- Tables ---------- */
   table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    font-size: 14px;
   }
   th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
     text-align: left;
   }
   th {
-    background-color: #eee;
+    background-color: var(--sky-light);
+    color: var(--sky-dark);
+    font-weight: 600;
+    font-size: 12.5px;
+    text-transform: none;
   }
   tr.highlight {
-    background-color: #fff8c4;
+    background-color: var(--orange-light);
   }
+  tr:hover td { background-color: #f8fbfd; }
+  tr.highlight:hover td { background-color: var(--orange-light); }
 
-  /* Small tags for status */
+  /* ---------- Status / role tags ---------- */
   .tag {
     display: inline-block;
-    padding: 2px 8px;
-    border-radius: 3px;
-    font-size: 12px;
-    color: white;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--white);
   }
-  .tag-admin { background: purple; }
-  .tag-instructor { background: teal; }
-  .tag-student { background: green; }
-  .tag-pending { background: orange; }
-  .tag-approved { background: green; }
-  .tag-rejected { background: red; }
+  .tag-admin      { background: var(--ink); }
+  .tag-instructor { background: var(--orange-dark); }
+  .tag-student    { background: var(--sky-dark); }
+  .tag-pending    { background: var(--orange); }
+  .tag-approved   { background: var(--sky); }
+  .tag-rejected   { background: var(--danger); }
 
-  /* Flash messages */
-  #flash {
-    max-width: 900px;
-    margin: 10px auto 0 auto;
+  /* ---------- Question box on take-quiz page ---------- */
+  .question {
+    border: 1px solid var(--border);
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    border-radius: var(--radius);
+    background: var(--white);
   }
-  .msg {
-    padding: 10px;
-    margin-bottom: 8px;
-    border-radius: 4px;
+  .question b { color: var(--sky-dark); }
+  .option {
+    padding: 6px 0;
     font-size: 14px;
   }
-  .msg-success { background: #dff0d8; color: #3c763d; }
-  .msg-danger  { background: #f2dede; color: #a94442; }
-  .msg-warning { background: #fcf8e3; color: #8a6d3b; }
-  .msg-info    { background: #d9edf7; color: #31708f; }
-
-  /* Question box on take-quiz page */
-  .question {
-    border: 1px solid #ccc;
-    padding: 15px;
-    margin-bottom: 12px;
-    border-radius: 5px;
-  }
-  .option {
-    padding: 5px 0;
-  }
+  .option label { font-weight: 400; cursor: pointer; }
 
   .timer {
-    background: #fffbcc;
-    padding: 10px;
-    border: 1px solid #e0d900;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    font-size: 16px;
-    font-weight: bold;
+    background: var(--orange-light);
+    color: var(--orange-dark);
+    padding: 12px 14px;
+    border: 1px solid var(--orange-border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    font-size: 15px;
+    font-weight: 600;
   }
 
-  .center {
-    text-align: center;
+  .square-box {
+    width: 420px;
+    height: 420px;
+    max-width: 90vw;
+    max-height: 90vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
+  .page-center {
+    min-height: calc(100vh - 90px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .center { text-align: center; }
+
+  #navbar, .box, .quiz-box, .question, table, th, td, input, textarea, select,
+  .msg, .tag, .timer, .score-box {
+    transition: var(--transition-theme);
+  }
+
+  /* ---------- Theme toggle button ---------- */
+  #themeToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--sky-light);
+    color: var(--ink);
+    cursor: pointer;
+    margin: 0;
+  }
+  #themeToggle:hover { filter: brightness(0.96); }
+  #themeToggle .icon { font-size: 16px; line-height: 1; }
 
   .score-box {
-    font-size: 30px;
-    font-weight: bold;
-    border: 5px solid #337ab7;
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--sky-dark);
+    border: 6px solid var(--sky-light);
+    border-top-color: var(--orange);
     border-radius: 50%;
     width: 120px;
     height: 120px;
-    line-height: 110px;
+    line-height: 108px;
     margin: 20px auto;
   }
 </style>
@@ -285,8 +446,39 @@ function drawNavbar() {
     linksHtml += '<a class="btn btn-blue" onclick="goTo(\'#/register\')">Sign Up</a>';
   }
 
-  nav.innerHTML = '<span class="title">E-Quiz / Online Quiz Management System</span><div>' + linksHtml + '</div>';
+  linksHtml += '<button id="themeToggle" onclick="toggleTheme()" aria-label="Toggle dark mode"></button>';
+
+  nav.innerHTML = '<span class="title">E-Quiz</span><div>' + linksHtml + '</div>';
+  updateThemeToggleLabel();
 }
+
+// ---------- dark mode / light mode ----------
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  try { localStorage.setItem('equiz-theme', theme); } catch (e) {}
+  updateThemeToggleLabel();
+}
+
+function toggleTheme() {
+  var current = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
+function updateThemeToggleLabel() {
+  var btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  btn.innerHTML = isDark ? '<span class="icon">&#9728;</span>' : '<span class="icon">&#9790;</span>';
+}
+
+(function initTheme() {
+  var saved = null;
+  try { saved = localStorage.getItem('equiz-theme'); } catch (e) {}
+  if (!saved) {
+    saved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  }
+  document.documentElement.setAttribute('data-theme', saved);
+})();
 
 function logout() {
   callApi('POST', '/api/logout').then(function () {
@@ -365,11 +557,13 @@ function router() {
 
 function showHomePage() {
   setContent(
-    '<div class="box center">' +
+    '<div class="page-center">' +
+    '<div class="box square-box center">' +
     '<h1>Welcome to the Quiz Management System</h1>' +
     '<p>Admins approve instructors, instructors create quizzes, and students take them and see their rank.</p>' +
     '<a class="btn btn-blue" onclick="goTo(\'#/register\')">Sign Up</a>' +
     '<a class="btn btn-gray" onclick="goTo(\'#/login\')">Login</a>' +
+    '</div>' +
     '</div>'
   );
 }
@@ -419,9 +613,9 @@ function showRegisterPage() {
     '<label>Confirm Password</label>' +
     '<input type="password" id="regConfirm" required>' +
     '<label>I am a:</label><br>' +
-    '<input type="radio" name="role" value="student" checked> Student &nbsp;' +
-    '<input type="radio" name="role" value="instructor"> Instructor' +
-    '<p style="font-size:13px;color:#666;">Note: instructor accounts need admin approval before you can log in.</p>' +
+    '<input type="radio" name="role" value="student" checked style="width:auto;display:inline-block;margin-right:6px;"> Student &nbsp;' +
+    '<input type="radio" name="role" value="instructor" style="width:auto;display:inline-block;margin-right:6px;"> Instructor' +
+    '<p style="font-size:13px;color:var(--ink-soft);margin-top:10px;">Note: instructor accounts need admin approval before you can log in.</p>' +
     '<button type="submit" class="btn btn-blue">Sign Up</button>' +
     '</form>' +
     '<p>Already have an account? <a onclick="goTo(\'#/login\')">Login</a></p>' +
@@ -656,10 +850,10 @@ function showQuestionsPage(quizId) {
       qHtml += '<div class="question">' +
                '<b>Q' + (index + 1) + '.</b> ' + esc(q.question_text) +
                ' <button class="btn btn-red" style="float:right;" onclick="deleteQuestion(' + q.id + ',' + quizId + ')">Delete</button>' +
-               '<div class="option">A. ' + esc(q.option_a) + (q.correct_option === 'A' ? ' ✔ correct' : '') + '</div>' +
-               '<div class="option">B. ' + esc(q.option_b) + (q.correct_option === 'B' ? ' ✔ correct' : '') + '</div>' +
-               '<div class="option">C. ' + esc(q.option_c) + (q.correct_option === 'C' ? ' ✔ correct' : '') + '</div>' +
-               '<div class="option">D. ' + esc(q.option_d) + (q.correct_option === 'D' ? ' ✔ correct' : '') + '</div>' +
+               '<div class="option">A. ' + esc(q.option_a) + (q.correct_option === 'A' ? ' &#10003; correct' : '') + '</div>' +
+               '<div class="option">B. ' + esc(q.option_b) + (q.correct_option === 'B' ? ' &#10003; correct' : '') + '</div>' +
+               '<div class="option">C. ' + esc(q.option_c) + (q.correct_option === 'C' ? ' &#10003; correct' : '') + '</div>' +
+               '<div class="option">D. ' + esc(q.option_d) + (q.correct_option === 'D' ? ' &#10003; correct' : '') + '</div>' +
                '</div>';
     });
 
@@ -729,7 +923,7 @@ function showUploadPage(quizId) {
     '<button type="submit" class="btn btn-blue">Upload</button>' +
     '</form>' +
     '<p style="font-size:13px; margin-top:15px;">The CSV needs these exact column headers:</p>' +
-    '<p style="font-family:monospace; background:#f5f5f5; padding:10px; font-size:12px;">' +
+    '<p style="font-family:monospace; background:var(--sky-light); color:var(--sky-dark); padding:10px; border-radius:6px; font-size:12px;">' +
     'question_text,option_a,option_b,option_c,option_d,correct_option</p>' +
     '<p style="font-size:13px;">correct_option should be A, B, C, or D.</p>' +
     '<a onclick="goTo(\'#/instructor/questions/' + quizId + '\')">&laquo; Back</a>' +
@@ -774,7 +968,7 @@ function showLeaderboard(quizId, url) {
     });
 
     setContent(
-      '<div class="box"><h1>Leaderboard - ' + esc(title) + '</h1>' +
+      '<div class="box"><h1>Leaderboard &mdash; ' + esc(title) + '</h1>' +
       (data.leaderboard.length ?
         '<table><tr><th>Rank</th><th>Student</th><th>Score</th><th>%</th><th>Time</th><th>Date</th></tr>' + rows + '</table>' :
         '<p>No one has taken this quiz yet.</p>') +
@@ -814,10 +1008,10 @@ function showTakeQuizPage(quizId) {
     questions.forEach(function (q, index) {
       qHtml += '<div class="question">' +
                '<b>Q' + (index + 1) + '.</b> ' + esc(q.question_text) +
-               '<div class="option"><label><input type="radio" name="q' + q.id + '" value="A"> A. ' + esc(q.option_a) + '</label></div>' +
-               '<div class="option"><label><input type="radio" name="q' + q.id + '" value="B"> B. ' + esc(q.option_b) + '</label></div>' +
-               '<div class="option"><label><input type="radio" name="q' + q.id + '" value="C"> C. ' + esc(q.option_c) + '</label></div>' +
-               '<div class="option"><label><input type="radio" name="q' + q.id + '" value="D"> D. ' + esc(q.option_d) + '</label></div>' +
+               '<div class="option"><label><input type="radio" name="q' + q.id + '" value="A" style="width:auto;display:inline;margin-right:6px;"> A. ' + esc(q.option_a) + '</label></div>' +
+               '<div class="option"><label><input type="radio" name="q' + q.id + '" value="B" style="width:auto;display:inline;margin-right:6px;"> B. ' + esc(q.option_b) + '</label></div>' +
+               '<div class="option"><label><input type="radio" name="q' + q.id + '" value="C" style="width:auto;display:inline;margin-right:6px;"> C. ' + esc(q.option_c) + '</label></div>' +
+               '<div class="option"><label><input type="radio" name="q' + q.id + '" value="D" style="width:auto;display:inline;margin-right:6px;"> D. ' + esc(q.option_d) + '</label></div>' +
                '</div>';
     });
 

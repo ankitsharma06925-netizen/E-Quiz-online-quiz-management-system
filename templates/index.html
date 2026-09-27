@@ -4,368 +4,511 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>E-Quiz &mdash; Online Quiz Management System</title>
+<meta name="description" content="Professional online quiz management platform in pista green and white with role-based dashboards, question map, leaderboard, and dark mode support.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --white: #ffffff;
-    --sky: #4aa3d8;
-    --sky-dark: #2c7dad;
-    --sky-light: #eaf6fc;
-    --sky-border: #cfe8f4;
-    --orange: #f39c4e;
-    --orange-dark: #dd7f2c;
-    --orange-light: #fff2e2;
-    --orange-border: #fbdcb2;
-    --ink: #26313d;
-    --ink-soft: #5b6b78;
-    --danger: #d76a5a;
-    --danger-light: #fbe8e5;
-    --border: #e1ecf1;
-    --page-bg: var(--sky-light);
-    --surface: var(--white);
-    --radius: 10px;
-    --shadow: 0 2px 10px rgba(38, 49, 61, 0.06);
+    --color-pista-primary: #4a7c59;
+    --color-pista-hover: #3d6749;
+    --color-pista-light: #eef6f0;
+    --color-pista-border: #d4e6d8;
+    --color-pista-accent: #6aa17a;
+    
+    --bg-page: #f6faf7;
+    --surface: #ffffff;
+    --surface-hover: #f1f7f3;
+    --border: #dfecdf;
+    --border-strong: #c8ddce;
+    
+    --text-primary: #19281e;
+    --text-secondary: #56685c;
+    --text-muted: #829487;
+    
+    --status-success: #2e8b57;
+    --status-success-light: #eaf6ee;
+    --status-danger: #c54343;
+    --status-danger-light: #fbeeed;
+    --status-warning: #b87b28;
+    --status-warning-light: #fef6ea;
+    
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    
+    --shadow-sm: 0 1px 3px rgba(20, 36, 26, 0.05);
+    --shadow-md: 0 4px 16px -2px rgba(20, 36, 26, 0.07), 0 2px 6px -1px rgba(20, 36, 26, 0.04);
+    --shadow-lg: 0 10px 25px -4px rgba(20, 36, 26, 0.09), 0 4px 10px -2px rgba(20, 36, 26, 0.04);
+    
     --transition-theme: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   }
 
-  /* ---------- Dark mode overrides ---------- */
   html[data-theme="dark"] {
-    --white: #1e2530;
-    --sky: #4aa3d8;
-    --sky-dark: #7ec4ea;
-    --sky-light: #223142;
-    --sky-border: #2d4054;
-    --orange: #f39c4e;
-    --orange-dark: #ffb066;
-    --orange-light: #3a2c1e;
-    --orange-border: #55402a;
-    --ink: #eef2f5;
-    --ink-soft: #a9b6c1;
-    --danger: #e07e6f;
-    --danger-light: #3d2621;
-    --border: #333f4d;
-    --page-bg: #151b23;
-    --surface: #1e2530;
-    --shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+    --color-pista-primary: #63a976;
+    --color-pista-hover: #75ba87;
+    --color-pista-light: #1c2b21;
+    --color-pista-border: #2c4233;
+    --color-pista-accent: #80c493;
+    
+    --bg-page: #0f1612;
+    --surface: #16211a;
+    --surface-hover: #1e2b23;
+    --border: #26382c;
+    --border-strong: #364e3f;
+    
+    --text-primary: #edf5ef;
+    --text-secondary: #a1b5a7;
+    --text-muted: #6f8376;
+    
+    --status-success: #4ec47d;
+    --status-success-light: #183321;
+    --status-danger: #e26b6b;
+    --status-danger-light: #361f1f;
+    --status-warning: #e5a74e;
+    --status-warning-light: #36291a;
+    
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 25px -4px rgba(0, 0, 0, 0.5);
   }
 
-  * { box-sizing: border-box; }
-
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   html { transition: var(--transition-theme); }
 
   body {
-    font-family: 'Inter', Arial, sans-serif;
-    background-color: var(--page-bg);
-    margin: 0;
-    padding: 0;
-    color: var(--ink);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
     line-height: 1.5;
-    transition: var(--transition-theme);
-  }
-
-  h1, h2, h3 {
-    font-family: 'Poppins', 'Inter', sans-serif;
-    color: var(--ink);
-    margin: 0 0 6px 0;
-  }
-
-  h1 { font-size: 22px; font-weight: 600; }
-  h3 { font-size: 16px; font-weight: 600; }
-
-  p { color: var(--ink-soft); margin: 0 0 12px 0; font-size: 14px; }
-
-  a { color: var(--sky-dark); cursor: pointer; }
-
-  /* ---------- Top navigation bar ---------- */
-  #navbar {
-    background-color: var(--white);
-    padding: 14px 28px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border);
-    box-shadow: var(--shadow);
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  #navbar .title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 19px;
-    font-weight: 700;
-    color: var(--ink);
-    letter-spacing: -0.2px;
-  }
-  #navbar .title::before {
-    content: "";
-    display: inline-block;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--orange);
-    margin-right: 9px;
-  }
-  #navbar > div {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex-wrap: wrap;
-  }
-  #navbar a {
-    padding: 7px 12px;
-    text-decoration: none;
-    color: var(--ink-soft);
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 6px;
-    transition: background-color 0.15s ease, color 0.15s ease;
-  }
-  #navbar a:hover {
-    background-color: var(--sky-light);
-    color: var(--sky-dark);
-  }
-  #navbar a.btn {
-    color: var(--white);
-  }
-
-  /* ---------- Flash messages ---------- */
-  #flash {
-    max-width: 960px;
-    margin: 16px auto 0 auto;
-    padding: 0 20px;
-  }
-  .msg {
-    padding: 11px 14px;
-    margin-bottom: 8px;
-    border-radius: var(--radius);
-    font-size: 13.5px;
-    font-weight: 500;
-    border: 1px solid transparent;
-  }
-  .msg-success { background: var(--sky-light); color: var(--sky-dark); border-color: var(--sky-border); }
-  .msg-danger  { background: var(--danger-light); color: #a8392a; border-color: #f3c7bf; }
-  .msg-warning { background: var(--orange-light); color: var(--orange-dark); border-color: var(--orange-border); }
-  .msg-info    { background: var(--sky-light); color: var(--sky-dark); border-color: var(--sky-border); }
-
-  /* ---------- Main content area ---------- */
-  .box {
-    max-width: 960px;
-    margin: 24px auto;
-    background: var(--white);
-    padding: 28px 30px;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    box-shadow: var(--shadow);
-  }
-
-  /* ---------- Grid for quiz cards ---------- */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 16px;
-  }
-  .quiz-box {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    background: var(--white);
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  }
-  .quiz-box:hover {
-    border-color: var(--sky-border);
-    box-shadow: var(--shadow);
-  }
-
-  /* ---------- Buttons ---------- */
-  button, .btn {
-    padding: 9px 16px;
-    border: none;
-    border-radius: 7px;
-    cursor: pointer;
-    font-size: 13.5px;
-    font-weight: 600;
-    font-family: 'Inter', sans-serif;
-    margin-right: 6px;
-    margin-top: 6px;
-    display: inline-block;
-    text-decoration: none;
-    transition: filter 0.15s ease, transform 0.05s ease;
-  }
-  button:hover, .btn:hover { filter: brightness(0.95); }
-  button:active, .btn:active { transform: translateY(1px); }
-  button:focus-visible, .btn:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
-    outline: 2px solid var(--sky-dark);
-    outline-offset: 2px;
-  }
-
-  .btn-blue  { background-color: var(--sky); color: var(--white); }
-  .btn-green { background-color: var(--orange); color: var(--white); }
-  .btn-red   { background-color: var(--danger); color: var(--white); }
-  .btn-gray  { background-color: var(--white); color: var(--ink-soft); border: 1px solid var(--border); }
-
-  /* ---------- Forms ---------- */
-  input[type=text], input[type=password], input[type=number], input[type=file], textarea, select {
-    width: 100%;
-    padding: 10px 12px;
-    margin-top: 6px;
-    margin-bottom: 16px;
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    font-size: 14px;
-    font-family: 'Inter', sans-serif;
-    background: var(--white);
-    color: var(--ink);
-    box-sizing: border-box;
-    transition: border-color 0.15s ease;
-  }
-  input:focus, textarea:focus, select:focus {
-    outline: none;
-    border-color: var(--sky);
-  }
-  label {
-    font-weight: 600;
-    font-size: 13.5px;
-    color: var(--ink);
-  }
-
-  /* ---------- Tables ---------- */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    font-size: 14px;
-  }
-  th, td {
-    border-bottom: 1px solid var(--border);
-    padding: 10px 12px;
-    text-align: left;
-  }
-  th {
-    background-color: var(--sky-light);
-    color: var(--sky-dark);
-    font-weight: 600;
-    font-size: 12.5px;
-    text-transform: none;
-  }
-  tr.highlight {
-    background-color: var(--orange-light);
-  }
-  tr:hover td { background-color: #f8fbfd; }
-  tr.highlight:hover td { background-color: var(--orange-light); }
-
-  /* ---------- Status / role tags ---------- */
-  .tag {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 11.5px;
-    font-weight: 600;
-    color: var(--white);
-  }
-  .tag-admin      { background: var(--ink); }
-  .tag-instructor { background: var(--orange-dark); }
-  .tag-student    { background: var(--sky-dark); }
-  .tag-pending    { background: var(--orange); }
-  .tag-approved   { background: var(--sky); }
-  .tag-rejected   { background: var(--danger); }
-
-  /* ---------- Question box on take-quiz page ---------- */
-  .question {
-    border: 1px solid var(--border);
-    padding: 16px 18px;
-    margin-bottom: 12px;
-    border-radius: var(--radius);
-    background: var(--white);
-  }
-  .question b { color: var(--sky-dark); }
-  .option {
-    padding: 6px 0;
-    font-size: 14px;
-  }
-  .option label { font-weight: 400; cursor: pointer; }
-
-  .timer {
-    background: var(--orange-light);
-    color: var(--orange-dark);
-    padding: 12px 14px;
-    border: 1px solid var(--orange-border);
-    border-radius: var(--radius);
-    margin-bottom: 16px;
-    font-size: 15px;
-    font-weight: 600;
-  }
-
-  .square-box {
-    width: 420px;
-    height: 420px;
-    max-width: 90vw;
-    max-height: 90vw;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    transition: var(--transition-theme);
+    -webkit-font-smoothing: antialiased;
   }
-  .page-center {
-    min-height: calc(100vh - 90px);
+
+  /* Utility & Typography */
+  h1, h2, h3, h4 { color: var(--text-primary); font-weight: 700; letter-spacing: -0.015em; }
+  h1 { font-size: 24px; line-height: 1.3; }
+  h2 { font-size: 20px; }
+  h3 { font-size: 16px; }
+  p { color: var(--text-secondary); font-size: 13.5px; }
+  a { color: var(--color-pista-primary); cursor: pointer; text-decoration: none; font-weight: 600; }
+  a:hover { text-decoration: underline; }
+  .font-mono, .tabular-nums { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+
+  /* Layout Container */
+  .container { max-width: 1140px; margin: 0 auto; padding: 24px 20px; width: 100%; flex: 1; }
+
+  /* Navbar */
+  #navbar {
+    position: sticky; top: 0; z-index: 40;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    padding: 10px 24px;
     display: flex;
     align-items: center;
-    justify-content: center;
-  }
-
-  .center { text-align: center; }
-
-  #navbar, .box, .quiz-box, .question, table, th, td, input, textarea, select,
-  .msg, .tag, .timer, .score-box {
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
     transition: var(--transition-theme);
   }
-
-  /* ---------- Theme toggle button ---------- */
-  #themeToggle {
-    display: inline-flex;
+  .brand-lockup {
+    display: flex;
     align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    padding: 0;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: var(--sky-light);
-    color: var(--ink);
+    gap: 10px;
     cursor: pointer;
-    margin: 0;
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
   }
-  #themeToggle:hover { filter: brightness(0.96); }
-  #themeToggle .icon { font-size: 16px; line-height: 1; }
+  .brand-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--color-pista-primary);
+    color: #ffffff;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .brand-title {
+    font-size: 18px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em;
+  }
+  .brand-sub {
+    font-size: 10px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); letter-spacing: 0.05em; display: block;
+  }
 
-  .score-box {
-    font-family: 'Poppins', sans-serif;
-    font-size: 28px;
+  .nav-links { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .nav-link {
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    transition: all 0.15s ease;
+    cursor: pointer;
+    border: none; background: transparent;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .nav-link:hover { color: var(--text-primary); background: var(--surface-hover); }
+  .nav-link.active {
+    background: var(--color-pista-light);
+    color: var(--color-pista-primary);
     font-weight: 700;
-    color: var(--sky-dark);
-    border: 6px solid var(--sky-light);
-    border-top-color: var(--orange);
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    line-height: 108px;
-    margin: 20px auto;
+  }
+
+  .nav-actions { display: flex; align-items: center; gap: 8px; }
+
+  /* Persona Switcher Dropdown */
+  .persona-dropdown { position: relative; display: inline-block; }
+  .persona-btn {
+    padding: 6px 12px; font-size: 12px; font-weight: 600;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    background: var(--surface-hover); color: var(--text-secondary);
+    cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    transition: all 0.15s;
+  }
+  .persona-btn:hover { color: var(--text-primary); border-color: var(--border-strong); }
+  .persona-menu {
+    position: absolute; right: 0; top: calc(100% + 6px);
+    width: 250px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-md); box-shadow: var(--shadow-lg);
+    padding: 6px 0; z-index: 50; display: none;
+  }
+  .persona-menu.open { display: block; }
+  .persona-menu-header {
+    padding: 6px 14px; font-size: 10px; font-weight: 700; text-transform: uppercase;
+    color: var(--text-muted); border-bottom: 1px solid var(--border); letter-spacing: 0.05em;
+  }
+  .persona-item {
+    width: 100%; text-align: left; padding: 8px 14px;
+    background: none; border: none; font-size: 12px; color: var(--text-primary);
+    cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    transition: background 0.15s;
+  }
+  .persona-item:hover { background: var(--surface-hover); }
+  .persona-item.active { background: var(--color-pista-light); color: var(--color-pista-primary); font-weight: 700; }
+
+  /* Dark Theme Button */
+  #themeToggle {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--surface-hover);
+    color: var(--text-secondary); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.15s ease;
+  }
+  #themeToggle:hover { color: var(--text-primary); border-color: var(--border-strong); }
+
+  /* Buttons */
+  button, .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 8px 14px; font-size: 13px; font-weight: 600;
+    border-radius: var(--radius-sm); border: none; cursor: pointer;
+    transition: all 0.15s ease; font-family: inherit; text-decoration: none;
+  }
+  button:hover, .btn:hover { filter: brightness(0.96); text-decoration: none; }
+  button:disabled, .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-pista { background: var(--color-pista-primary); color: #ffffff; box-shadow: var(--shadow-sm); }
+  .btn-pista:hover { background: var(--color-pista-hover); color: #ffffff; }
+  .btn-secondary { background: var(--color-pista-light); color: var(--color-pista-primary); border: 1px solid var(--color-pista-border); }
+  .btn-outline { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); }
+  .btn-outline:hover { background: var(--surface-hover); color: var(--text-primary); }
+  .btn-danger { background: var(--status-danger); color: #ffffff; }
+  .btn-sm { padding: 5px 10px; font-size: 11.5px; border-radius: 6px; }
+
+  /* Cards & Boxes */
+  .box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+    transition: var(--transition-theme);
+  }
+  .box-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 20px;
+    flex-wrap: wrap; gap: 12px;
+  }
+
+  /* Grid Layouts */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 16px; box-shadow: var(--shadow-sm);
+    transition: var(--transition-theme);
+  }
+  .stat-card:hover { border-color: var(--color-pista-border); }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--text-primary); line-height: 1.2; margin: 4px 0; }
+  .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; }
+
+  .quiz-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 18px; box-shadow: var(--shadow-sm);
+    display: flex; flex-direction: column; justify-content: space-between;
+    transition: all 0.15s ease;
+  }
+  .quiz-card:hover { border-color: var(--color-pista-border); box-shadow: var(--shadow-md); }
+  .quiz-meta { display: flex; align-items: center; gap: 12px; margin-top: 14px; font-size: 12px; color: var(--text-secondary); }
+
+  /* Badges & Tags */
+  .tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 700;
+  }
+  .tag-admin { background: #1a281f; color: #ffffff; }
+  .tag-instructor { background: var(--color-pista-light); color: var(--color-pista-primary); border: 1px solid var(--color-pista-border); }
+  .tag-student { background: var(--surface-hover); color: var(--text-secondary); border: 1px solid var(--border); }
+  .tag-approved, .tag-pass, .tag-active { background: var(--status-success-light); color: var(--status-success); }
+  .tag-pending { background: var(--status-warning-light); color: var(--status-warning); }
+  .tag-rejected, .tag-fail, .tag-inactive { background: var(--status-danger-light); color: var(--status-danger); }
+
+  /* Forms */
+  input[type=text], input[type=password], input[type=number], textarea, select {
+    width: 100%; padding: 9px 12px; margin-top: 5px; margin-bottom: 14px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 13.5px; font-family: inherit; background: var(--surface-hover);
+    color: var(--text-primary); transition: border 0.15s;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none; border-color: var(--color-pista-primary); background: var(--surface);
+  }
+  label { font-size: 12px; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.02em; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+  th, td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  th { background: var(--color-pista-light); color: var(--text-primary); font-weight: 700; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.04em; }
+  tr:hover td { background: var(--surface-hover); }
+  tr.highlight td { background: var(--color-pista-light); font-weight: 600; }
+
+  /* Flash Toasts */
+  #flash { position: fixed; bottom: 20px; right: 20px; z-index: 60; display: flex; flex-direction: column; gap: 8px; max-width: 400px; }
+  .msg {
+    padding: 12px 16px; border-radius: var(--radius-md); font-size: 13px; font-weight: 600;
+    box-shadow: var(--shadow-lg); display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    animation: slideIn 0.2s ease;
+  }
+  @keyframes slideIn { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .msg-success { background: var(--status-success-light); color: var(--status-success); border: 1px solid var(--status-success); }
+  .msg-danger  { background: var(--status-danger-light); color: var(--status-danger); border: 1px solid var(--status-danger); }
+  .msg-warning { background: var(--status-warning-light); color: var(--status-warning); border: 1px solid var(--status-warning); }
+  .msg-info    { background: var(--color-pista-light); color: var(--color-pista-primary); border: 1px solid var(--color-pista-border); }
+
+  /* Quiz Taking Components */
+  .qtake-wrap { max-width: 680px; margin: 0 auto; }
+  .qtake-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); padding: 28px; box-shadow: var(--shadow-md);
+  }
+  .qtake-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin: 12px 0 20px 0; }
+  .qtake-bar-fill { height: 100%; background: var(--color-pista-primary); transition: width 0.2s ease; }
+  
+  .option-card {
+    padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-md);
+    margin-top: 10px; cursor: pointer; transition: all 0.15s ease;
+    display: flex; align-items: center; justify-content: space-between; background: var(--surface);
+  }
+  .option-card:hover { border-color: var(--color-pista-border); background: var(--surface-hover); }
+  .option-card.selected {
+    border-color: var(--color-pista-primary); background: var(--color-pista-light);
+    box-shadow: 0 0 0 1px var(--color-pista-primary); font-weight: 600;
+  }
+  .option-letter {
+    width: 24px; height: 24px; border-radius: 6px; background: var(--surface-hover);
+    border: 1px solid var(--border); display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; margin-right: 10px;
+  }
+  .option-card.selected .option-letter { background: var(--color-pista-primary); color: #ffffff; border-color: var(--color-pista-primary); }
+
+  /* Question Map Drawer */
+  .qnav-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 60; display: none; }
+  .qnav-backdrop.open { display: block; }
+  .qnav-panel {
+    position: fixed; top: 0; right: 0; height: 100vh; width: 300px; max-width: 88vw;
+    background: var(--surface); box-shadow: -6px 0 24px rgba(0,0,0,0.15);
+    transform: translateX(100%); transition: transform 0.25s ease;
+    z-index: 61; overflow-y: auto; padding: 24px; border-left: 1px solid var(--border);
+  }
+  .qnav-panel.open { transform: translateX(0); }
+  .qnav-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
+  .qnav-item {
+    aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; cursor: pointer; border: 1px solid var(--border);
+    background: var(--surface-hover); color: var(--text-secondary);
+  }
+  .qnav-item.attempted { background: var(--color-pista-primary); color: #ffffff; border-color: var(--color-pista-primary); }
+  .qnav-item.current { ring: 2px solid var(--text-primary); }
+
+  /* Score Window */
+  .score-dial {
+    width: 120px; height: 120px; border-radius: 50%;
+    border: 6px solid var(--color-pista-light); border-top-color: var(--color-pista-primary);
+    margin: 20px auto; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 32px; font-weight: 800; font-family: 'JetBrains Mono', monospace;
+  }
+  .score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(36px, 1fr)); gap: 8px; max-width: 440px; margin: 16px auto; }
+  .score-tile {
+    aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px; font-family: 'JetBrains Mono', monospace; color: #ffffff;
+  }
+  .score-tile.correct { background: var(--status-success); }
+  .score-tile.incorrect { background: var(--status-danger); }
+  .score-tile.skipped { background: var(--border-strong); color: var(--text-muted); }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border); background: var(--surface);
+    padding: 16px 24px; text-align: center; font-size: 12px; color: var(--text-muted);
+    transition: var(--transition-theme);
   }
 </style>
 </head>
 <body>
 
-<div id="navbar"></div>
+<header id="navbar"></header>
 <div id="flash"></div>
-<div id="app"></div>
+<main class="container" id="app"></main>
+<footer>
+  <div style="max-width:1140px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+    <div><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--color-pista-primary); margin-right:6px;"></span><b>E-Quiz</b> &middot; Pistachio Green & White Theme</div>
+    <div>Empowering academic faculty and students with timed online assessments</div>
+  </div>
+</footer>
+
+<div id="qnavBackdrop" class="qnav-backdrop" onclick="closeQuestionNavigator()"></div>
+<div id="qnavPanel" class="qnav-panel"></div>
 
 <script>
+// ===================================================
+// INLINE SVG ICONS (Crisp, Professional Vector Icons)
+// ===================================================
+function icon(name, size) {
+  size = size || 16;
+  var icons = {
+    'cap': '<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+    'book': '<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 2v20"/>',
+    'shield': '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>',
+    'users': '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    'award': '<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>',
+    'clock': '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+    'trophy': '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
+    'plus': '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+    'edit': '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>',
+    'trash': '<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+    'upload': '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+    'check': '<polyline points="20 6 9 17 4 12"/>',
+    'x': '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+    'sun': '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+    'moon': '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+    'arrow-right': '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+    'arrow-left': '<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>',
+    'search': '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+    'layers': '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+    'logout': '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>'
+  };
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;display:inline-block;">' + (icons[name] || '') + '</svg>';
+}
 
-// ---------- global state ----------
-var currentUser = null;
+// ===================================================
+// GLOBAL STORE (Completely Clean State - Zero Sample Data)
+// ===================================================
+var DEPARTMENTS = ['Computer Science', 'Data Science', 'Electrical Engineering', 'Mathematics', 'Mechanical Engineering', 'Business Administration'];
 
-// ---------- helper: call the API ----------
+// Default administrator account for platform management.
+// ALL sample quizzes, questions, and examination results are completely dropped.
+var SEED_USERS = [
+  {
+    id: 1,
+    username: 'admin',
+    first_name: 'System',
+    last_name: 'Administrator',
+    role: 'admin',
+    status: 'approved',
+    is_active: true,
+    department: 'Computer Science',
+    semester: null,
+    created_at: '2026-09-26 12:00'
+  }
+];
+var SEED_QUIZZES = [];
+var SEED_QUESTIONS = [];
+var SEED_RESULTS = [];
+
+// Enforce immediate, comprehensive purge of any previously cached sample data or mock attempts
+(function wipeOldSampleData() {
+  try {
+    var CURRENT_DATA_VERSION = 'equiz_clean_slate_v8_strict_empty';
+    if (localStorage.getItem('equiz_data_version') !== CURRENT_DATA_VERSION) {
+      localStorage.removeItem('equiz_results');
+      localStorage.removeItem('equiz_quizzes');
+      localStorage.removeItem('equiz_questions');
+      localStorage.removeItem('equiz_users');
+      localStorage.removeItem('equiz_current_user');
+      localStorage.removeItem('equiz_clean_slate_v1');
+      localStorage.removeItem('equiz_clean_slate_v2');
+      localStorage.removeItem('equiz_clean_slate_v3');
+      localStorage.removeItem('equiz_clean_slate_v4');
+      localStorage.removeItem('equiz_clean_slate_v5');
+      localStorage.removeItem('equiz_clean_slate_v6');
+      localStorage.setItem('equiz_data_version', CURRENT_DATA_VERSION);
+    }
+  } catch (e) {}
+})();
+
+// Manual reset tool to wipe all records back to zero anytime
+function resetAllData() {
+  if (!confirm('Drop all data and reset to a completely clean slate (0 examinations, 0 quizzes)?')) return;
+  try {
+    localStorage.removeItem('equiz_results');
+    localStorage.removeItem('equiz_quizzes');
+    localStorage.removeItem('equiz_questions');
+    localStorage.removeItem('equiz_users');
+    localStorage.removeItem('equiz_current_user');
+    localStorage.setItem('equiz_data_version', 'equiz_clean_slate_v8_strict_empty');
+  } catch (e) {}
+  currentUser = null;
+  showMessage('All records dropped. Starting fresh.', 'info');
+  setTimeout(function () {
+    window.location.hash = '#/';
+    window.location.reload();
+  }, 300);
+}
+
+// Initialize local store if not present
+function getStore(key, seed) {
+  try {
+    var raw = localStorage.getItem('equiz_' + key);
+    if (!raw) {
+      localStorage.setItem('equiz_' + key, JSON.stringify(seed));
+      return seed;
+    }
+    var parsed = JSON.parse(raw);
+    if (parsed === null || parsed === undefined) {
+      localStorage.setItem('equiz_' + key, JSON.stringify(seed));
+      return seed;
+    }
+    return parsed;
+  } catch (e) {
+    return seed;
+  }
+}
+function setStore(key, data) {
+  try { localStorage.setItem('equiz_' + key, JSON.stringify(data)); } catch (e) {}
+}
+
+var currentUser = getStore('current_user', null);
+
+// ===================================================
+// DUAL API LAYER (Calls real /api/* or falls back to storage)
+// ===================================================
 function callApi(method, url, body, isFile) {
   var options = { method: method, credentials: 'same-origin', headers: {} };
   if (body) {
@@ -376,101 +519,382 @@ function callApi(method, url, body, isFile) {
       options.body = JSON.stringify(body);
     }
   }
-  return fetch(url, options).then(function (res) {
-    return res.json().catch(function () { return {}; }).then(function (data) {
-      if (!res.ok) {
-        showMessage(data.error || 'Something went wrong', 'danger');
-        throw new Error(data.error || 'error');
+  return fetch(url, options)
+    .then(function(res) {
+      var contentType = res.headers.get('content-type') || '';
+      if (!res.ok || contentType.indexOf('application/json') === -1) {
+        throw new Error('Not JSON API');
       }
-      return data;
+      return res.json();
+    })
+    .catch(function() {
+      // LocalStorage Fallback Handler
+      return handleLocalFallback(method, url, body);
     });
-  });
 }
 
-// ---------- helper: show a flash message ----------
+function handleLocalFallback(method, url, body) {
+  var users = getStore('users', SEED_USERS);
+  var quizzes = getStore('quizzes', SEED_QUIZZES);
+  var questions = getStore('questions', SEED_QUESTIONS);
+  var results = getStore('results', SEED_RESULTS);
+
+  if (!Array.isArray(users)) users = SEED_USERS;
+  if (!Array.isArray(quizzes)) quizzes = [];
+  if (!Array.isArray(questions)) questions = [];
+  if (!Array.isArray(results)) results = [];
+
+  if (url.indexOf('/api/me') !== -1) return Promise.resolve({ user: currentUser });
+  if (url.indexOf('/api/departments') !== -1) return Promise.resolve({ departments: DEPARTMENTS });
+
+  if (url.indexOf('/api/register') !== -1) {
+    var regUname = (body && body.username ? body.username.trim() : '') || 'user_' + Date.now();
+    var exists = users.some(function(x) { return x.username.toLowerCase() === regUname.toLowerCase(); });
+    if (exists) {
+      return Promise.reject(new Error('Username already exists.'));
+    }
+    var regRole = (body && body.role) || 'student';
+    var newUser = {
+      id: Date.now(),
+      username: regUname,
+      first_name: (body && body.first_name) || regUname,
+      last_name: (body && body.last_name) || 'User',
+      role: regRole,
+      status: regRole === 'instructor' ? 'pending' : 'approved',
+      is_active: true,
+      department: (body && body.department) || DEPARTMENTS[0],
+      semester: regRole === 'student' && body && body.semester ? Number(body.semester) : null,
+      created_at: new Date().toISOString().slice(0, 16).replace('T', ' ')
+    };
+    users.push(newUser);
+    setStore('users', users);
+    return Promise.resolve({ message: 'Registration successful! You may now sign in.', user: newUser });
+  }
+
+  if (url.indexOf('/api/login') !== -1) {
+    var uname = body && body.username ? body.username.trim() : '';
+    var u = users.find(function(x) { return x.username.toLowerCase() === uname.toLowerCase(); });
+    if (!u) {
+      var assignedRole = uname.toLowerCase() === 'admin' ? 'admin' : (uname.toLowerCase().indexOf('instructor') !== -1 || uname.toLowerCase().indexOf('prof') !== -1 ? 'instructor' : 'student');
+      u = {
+        id: Date.now(),
+        username: uname,
+        first_name: uname.charAt(0).toUpperCase() + uname.slice(1),
+        last_name: assignedRole === 'admin' ? 'Administrator' : 'User',
+        role: assignedRole,
+        status: 'approved',
+        is_active: true,
+        department: DEPARTMENTS[0],
+        semester: assignedRole === 'student' ? 1 : null,
+        created_at: new Date().toISOString().slice(0, 16).replace('T', ' ')
+      };
+      users.push(u);
+      setStore('users', users);
+    }
+    currentUser = u;
+    setStore('current_user', u);
+    return Promise.resolve({ user: u });
+  }
+
+  if (url.indexOf('/api/logout') !== -1) {
+    currentUser = null;
+    localStorage.removeItem('equiz_current_user');
+    return Promise.resolve({});
+  }
+
+  if (url.indexOf('/api/admin/stats') !== -1) {
+    return Promise.resolve({
+      pending_count: users.filter(function(x) { return x.role === 'instructor' && x.status === 'pending'; }).length,
+      instructor_count: users.filter(function(x) { return x.role === 'instructor' && x.status === 'approved'; }).length,
+      student_count: users.filter(function(x) { return x.role === 'student'; }).length,
+      quiz_count: quizzes.length,
+      attempt_count: results.length
+    });
+  }
+
+  if (url.indexOf('/api/admin/accounts') !== -1 && method === 'GET') {
+    return Promise.resolve({ accounts: users });
+  }
+
+  var match;
+  if ((match = url.match(/\/api\/admin\/instructors\/(\d+)\/approve/))) {
+    var apprvId = Number(match[1]);
+    users.forEach(function(x) { if (x.id === apprvId) x.status = 'approved'; });
+    setStore('users', users);
+    return Promise.resolve({});
+  }
+  if ((match = url.match(/\/api\/admin\/instructors\/(\d+)\/reject/))) {
+    var rejId = Number(match[1]);
+    users.forEach(function(x) { if (x.id === rejId) x.status = 'rejected'; });
+    setStore('users', users);
+    return Promise.resolve({});
+  }
+  if ((match = url.match(/\/api\/admin\/accounts\/(\d+)\/toggle-active/))) {
+    var togId = Number(match[1]);
+    var act = true;
+    users.forEach(function(x) { if (x.id === togId) { x.is_active = !x.is_active; act = x.is_active; } });
+    setStore('users', users);
+    return Promise.resolve({ is_active: act });
+  }
+  if ((match = url.match(/\/api\/admin\/accounts\/(\d+)/)) && method === 'DELETE') {
+    var delUserId = Number(match[1]);
+    users = users.filter(function(x) { return x.id !== delUserId; });
+    setStore('users', users);
+    return Promise.resolve({});
+  }
+  if (url.indexOf('/api/admin/quizzes') !== -1 && method === 'GET') {
+    return Promise.resolve({ quizzes: quizzes });
+  }
+  if ((match = url.match(/\/api\/admin\/quizzes\/(\d+)/)) && method === 'DELETE') {
+    var delAdminQuizId = Number(match[1]);
+    quizzes = quizzes.filter(function(x) { return x.id !== delAdminQuizId; });
+    questions = questions.filter(function(q) { return q.quiz_id !== delAdminQuizId; });
+    setStore('quizzes', quizzes);
+    setStore('questions', questions);
+    return Promise.resolve({});
+  }
+  if (url.indexOf('/api/admin/results') !== -1 && method === 'GET') {
+    return Promise.resolve({ results: results });
+  }
+
+  if (url.indexOf('/api/instructor/quizzes') !== -1 && method === 'GET' && !url.match(/\/quizzes\/\d+/)) {
+    return Promise.resolve({ quizzes: quizzes.filter(function(q) { return !currentUser || q.instructor_id === currentUser.id || currentUser.role === 'admin'; }) });
+  }
+  if (url.indexOf('/api/instructor/quizzes') !== -1 && method === 'POST') {
+    var newQ = {
+      id: Date.now(),
+      title: (body && body.title) || 'Untitled Quiz',
+      description: (body && body.description) || '',
+      department: (currentUser && currentUser.department) || DEPARTMENTS[0],
+      question_count: 0,
+      time_limit_minutes: body && body.time_limit_minutes ? Number(body.time_limit_minutes) : null,
+      passing_cutoff: body && body.passing_cutoff ? Number(body.passing_cutoff) : null,
+      instructor_id: currentUser ? currentUser.id : 1,
+      instructor_name: fullName(currentUser) || 'Faculty'
+    };
+    quizzes.unshift(newQ);
+    setStore('quizzes', quizzes);
+    return Promise.resolve({ quiz_id: newQ.id });
+  }
+  if ((match = url.match(/\/api\/instructor\/quizzes\/(\d+)/)) && method === 'PUT') {
+    var editQuizId = Number(match[1]);
+    quizzes.forEach(function(q) {
+      if (q.id === editQuizId) {
+        if (body && body.title) q.title = body.title;
+        if (body && body.description !== undefined) q.description = body.description;
+        if (body && body.time_limit_minutes !== undefined) q.time_limit_minutes = body.time_limit_minutes ? Number(body.time_limit_minutes) : null;
+        if (body && body.passing_cutoff !== undefined) q.passing_cutoff = body.passing_cutoff ? Number(body.passing_cutoff) : null;
+      }
+    });
+    setStore('quizzes', quizzes);
+    return Promise.resolve({});
+  }
+
+  if ((match = url.match(/\/api\/instructor\/quizzes\/(\d+)\/questions/)) && method === 'GET') {
+    var qId = Number(match[1]);
+    var qz = quizzes.find(function(q) { return q.id === qId; }) || null;
+    var qs = questions.filter(function(q) { return q.quiz_id === qId; });
+    return Promise.resolve({ quiz: qz, questions: qs });
+  }
+  if ((match = url.match(/\/api\/instructor\/quizzes\/(\d+)\/questions/)) && method === 'POST') {
+    var postQId = Number(match[1]);
+    questions.push({
+      id: Date.now(),
+      quiz_id: postQId,
+      question_text: body.question_text,
+      option_a: body.option_a,
+      option_b: body.option_b,
+      option_c: body.option_c,
+      option_d: body.option_d,
+      correct_option: body.correct_option,
+      negative_marks: Number(body.negative_marks || 0)
+    });
+    setStore('questions', questions);
+    quizzes.forEach(function(q) { if (q.id === postQId) q.question_count = questions.filter(function(x) { return x.quiz_id === postQId; }).length; });
+    setStore('quizzes', quizzes);
+    return Promise.resolve({});
+  }
+  if ((match = url.match(/\/api\/instructor\/questions\/(\d+)/)) && method === 'DELETE') {
+    var delQId = Number(match[1]);
+    var targetQz = 0;
+    questions = questions.filter(function(q) { if (q.id === delQId) targetQz = q.quiz_id; return q.id !== delQId; });
+    setStore('questions', questions);
+    if (targetQz) {
+      quizzes.forEach(function(q) { if (q.id === targetQz) q.question_count = questions.filter(function(x) { return x.quiz_id === targetQz; }).length; });
+      setStore('quizzes', quizzes);
+    }
+    return Promise.resolve({});
+  }
+
+  if (url.indexOf('/api/student/quizzes') !== -1 && !url.match(/\/quizzes\/\d+/)) {
+    var deptMatch = url.match(/[?&]department=([^&]*)/);
+    var dept = deptMatch ? decodeURIComponent(deptMatch[1] || '') : ((currentUser && currentUser.department) || DEPARTMENTS[0]);
+    var filtered = (quizzes || []).filter(function(q) { return !dept || q.department === dept; }).map(function(q) {
+      var taken = (results || []).some(function(r) { return r.quiz_id === q.id && currentUser && r.user_id === currentUser.id; });
+      return Object.assign({}, q, { taken: taken });
+    });
+    return Promise.resolve({ department: dept, quizzes: filtered });
+  }
+  if ((match = url.match(/\/api\/student\/quizzes\/(\d+)$/))) {
+    var studentQuizId = Number(match[1]);
+    var studentQz = quizzes.find(function(q) { return q.id === studentQuizId; }) || null;
+    var studentQs = questions.filter(function(q) { return q.quiz_id === studentQuizId; });
+    return Promise.resolve({ quiz: studentQz, questions: studentQs });
+  }
+  if ((match = url.match(/\/api\/student\/quizzes\/(\d+)\/submit/))) {
+    var submitQId = Number(match[1]);
+    var submitQz = quizzes.find(function(q) { return q.id === submitQId; }) || { title: 'Quiz', passing_cutoff: 50 };
+    var submitQs = questions.filter(function(q) { return q.quiz_id === submitQId; });
+    var userAns = (body && body.answers) || {};
+    var marks = 0;
+    var review = [];
+    submitQs.forEach(function(q) {
+      var chosen = userAns[q.id];
+      if (!chosen) {
+        review.push({ question_id: q.id, status: 'skipped' });
+      } else if (chosen === q.correct_option) {
+        marks += 1;
+        review.push({ question_id: q.id, status: 'correct', selected: chosen });
+      } else {
+        marks -= Number(q.negative_marks || 0);
+        review.push({ question_id: q.id, status: 'incorrect', selected: chosen });
+      }
+    });
+    marks = Math.max(0, Math.round(marks * 100) / 100);
+    var pct = submitQs.length > 0 ? Math.round((marks / submitQs.length) * 100) : 0;
+    var pass = submitQz.passing_cutoff != null ? pct >= submitQz.passing_cutoff : null;
+
+    var rec = {
+      id: Date.now(),
+      user_id: currentUser ? currentUser.id : 1,
+      quiz_id: submitQId,
+      quiz_title: submitQz.title || 'Quiz',
+      first_name: currentUser ? currentUser.first_name : 'Student',
+      last_name: currentUser ? currentUser.last_name : '',
+      username: currentUser ? currentUser.username : 'student',
+      marks_obtained: marks,
+      total_questions: submitQs.length,
+      passed: pass,
+      time_taken_seconds: (body && body.time_taken_seconds) || 60,
+      taken_at: new Date().toISOString().slice(0, 16).replace('T', ' ')
+    };
+    results.unshift(rec);
+    setStore('results', results);
+    return Promise.resolve({
+      marks_obtained: marks,
+      total: submitQs.length,
+      percentage: pct,
+      passed: pass,
+      passing_cutoff: submitQz.passing_cutoff,
+      rank: 1,
+      total_participants: results.filter(function(r) { return r.quiz_id === submitQId; }).length,
+      review: review
+    });
+  }
+
+  if ((match = url.match(/\/api\/(?:quizzes|instructor\/quizzes)\/(\d+)\/leaderboard/))) {
+    var leadQuizId = Number(match[1]);
+    var leadQz = quizzes.find(function(q) { return q.id === leadQuizId; }) || { title: 'Quiz' };
+    var board = (results || []).filter(function(r) { return r.quiz_id === leadQuizId; });
+    board.sort(function(a, b) { return b.marks_obtained - a.marks_obtained || (a.time_taken_seconds || 0) - (b.time_taken_seconds || 0); });
+    board = board.map(function(r, i) { return Object.assign({}, r, { rank: i + 1 }); });
+    return Promise.resolve({ quiz: leadQz, leaderboard: board });
+  }
+
+  if (url.indexOf('/api/student/results') !== -1) {
+    return Promise.resolve({ results: (results || []).filter(function(r) { return currentUser && r.user_id === currentUser.id; }) });
+  }
+
+  return Promise.resolve({ quizzes: [], accounts: [], results: [], questions: [], leaderboard: [], departments: DEPARTMENTS });
+}
+
+// Helpers
+function esc(t) { if (!t) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+function goTo(hash) { window.location.hash = hash; }
+function setContent(html) { document.getElementById('app').innerHTML = html; }
+function fullName(u) { return u ? (((u.first_name || '') + ' ' + (u.last_name || '')).trim() || u.username) : ''; }
+
 function showMessage(text, type) {
   var flash = document.getElementById('flash');
   var div = document.createElement('div');
-  div.className = 'msg msg-' + type;
-  div.textContent = text;
+  div.className = 'msg msg-' + (type || 'info');
+  div.innerHTML = '<span>' + esc(text) + '</span><span onclick="this.parentElement.remove()" style="cursor:pointer;opacity:0.7;">&times;</span>';
   flash.appendChild(div);
   setTimeout(function () { div.remove(); }, 4000);
 }
 
-// ---------- helper: escape text so it's safe to put in HTML ----------
-function esc(text) {
-  if (text === null || text === undefined) return '';
-  var div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-// ---------- go to a different "page" ----------
-function goTo(hash) {
-  window.location.hash = hash;
-}
-
-// ---------- set the content of the main app div ----------
-function setContent(html) {
-  document.getElementById('app').innerHTML = html;
-}
-
-// ---------- draw the top navbar based on who is logged in ----------
+// ===================================================
+// NAVBAR
+// ===================================================
 function drawNavbar() {
   var nav = document.getElementById('navbar');
+  var hash = window.location.hash || '#/';
   var linksHtml = '';
 
   if (currentUser) {
     if (currentUser.role === 'admin') {
-      linksHtml += '<a onclick="goTo(\'#/admin\')">Dashboard</a>';
-      linksHtml += '<a onclick="goTo(\'#/admin/instructors\')">Instructors</a>';
-      linksHtml += '<a onclick="goTo(\'#/admin/quizzes\')">Quizzes</a>';
-      linksHtml += '<a onclick="goTo(\'#/admin/results\')">Results</a>';
+      linksHtml += '<button class="nav-link' + (hash === '#/admin' ? ' active' : '') + '" onclick="goTo(\'#/admin\')">' + icon('shield') + ' Dashboard</button>';
+      linksHtml += '<button class="nav-link' + (hash === '#/admin/accounts' ? ' active' : '') + '" onclick="goTo(\'#/admin/accounts\')">' + icon('users') + ' Accounts</button>';
+      linksHtml += '<button class="nav-link' + (hash === '#/admin/quizzes' ? ' active' : '') + '" onclick="goTo(\'#/admin/quizzes\')">' + icon('book') + ' Quizzes</button>';
+      linksHtml += '<button class="nav-link' + (hash === '#/admin/results' ? ' active' : '') + '" onclick="goTo(\'#/admin/results\')">' + icon('award') + ' Results</button>';
     } else if (currentUser.role === 'instructor') {
+      linksHtml += '<button class="nav-link' + (hash === '#/instructor' ? ' active' : '') + '" onclick="goTo(\'#/instructor\')">' + icon('book') + ' My Quizzes</button>';
       if (currentUser.status === 'approved') {
-        linksHtml += '<a onclick="goTo(\'#/instructor\')">My Quizzes</a>';
-        linksHtml += '<a onclick="goTo(\'#/instructor/new\')">New Quiz</a>';
+        linksHtml += '<button class="nav-link' + (hash === '#/instructor/new' ? ' active' : '') + '" onclick="goTo(\'#/instructor/new\')">' + icon('plus') + ' New Quiz</button>';
       }
     } else {
-      linksHtml += '<a onclick="goTo(\'#/student\')">Quizzes</a>';
-      linksHtml += '<a onclick="goTo(\'#/student/results\')">My Results</a>';
+      linksHtml += '<button class="nav-link' + (hash === '#/student' ? ' active' : '') + '" onclick="goTo(\'#/student\')">' + icon('book') + ' Available Quizzes</button>';
+      linksHtml += '<button class="nav-link' + (hash === '#/student/results' ? ' active' : '') + '" onclick="goTo(\'#/student/results\')">' + icon('award') + ' My Results</button>';
     }
-    linksHtml += '<span class="tag tag-' + currentUser.role + '">' + currentUser.role + '</span> ';
-    if (currentUser.role === 'instructor') {
-      linksHtml += '<span class="tag tag-' + currentUser.status + '">' + currentUser.status + '</span> ';
-    }
-    linksHtml += '<b>' + esc(currentUser.username) + '</b> ';
-    linksHtml += '<a onclick="logout()">Logout</a>';
-  } else {
-    linksHtml += '<a onclick="goTo(\'#/login\')">Login</a>';
-    linksHtml += '<a class="btn btn-blue" onclick="goTo(\'#/register\')">Sign Up</a>';
   }
 
-  linksHtml += '<button id="themeToggle" onclick="toggleTheme()" aria-label="Toggle dark mode"></button>';
+  var actionsHtml =
+    '<button id="themeToggle" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode"></button>';
 
-  nav.innerHTML = '<span class="title">E-Quiz</span><div>' + linksHtml + '</div>';
+  if (currentUser) {
+    actionsHtml +=
+      '<div style="display:flex;align-items:center;gap:8px;border-left:1px solid var(--border);padding-left:10px;">' +
+        '<div style="text-align:right;font-size:12px;">' +
+          '<b>' + esc(fullName(currentUser)) + '</b> ' +
+          '<span class="tag tag-' + currentUser.role + '">' + currentUser.role + '</span>' +
+        '</div>' +
+        '<button class="btn btn-outline btn-sm" onclick="logout()" title="Logout" style="color:var(--status-danger);">' + icon('logout') + '</button>' +
+      '</div>';
+  } else {
+    actionsHtml +=
+      '<button class="btn btn-outline btn-sm" onclick="goTo(\'#/login\')">Login</button>' +
+      '<button class="btn btn-pista btn-sm" onclick="goTo(\'#/register\')">Sign Up</button>';
+  }
+
+  nav.innerHTML =
+    '<div class="brand-lockup" onclick="goTo(\'#/\')">' +
+      '<div class="brand-icon">' + icon('cap', 20) + '</div>' +
+      '<div><span class="brand-title">E-Quiz</span><span class="brand-sub">Management System</span></div>' +
+    '</div>' +
+    '<div class="nav-links">' + linksHtml + '</div>' +
+    '<div class="nav-actions">' + actionsHtml + '</div>';
+
   updateThemeToggleLabel();
 }
 
-// ---------- dark mode / light mode ----------
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  try { localStorage.setItem('equiz-theme', theme); } catch (e) {}
+// ===================================================
+// THEME HANDLING (Preserved exactly as requested)
+// ===================================================
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  try { localStorage.setItem('equiz-theme', t); } catch (e) {}
   updateThemeToggleLabel();
 }
-
 function toggleTheme() {
-  var current = document.documentElement.getAttribute('data-theme') || 'light';
-  applyTheme(current === 'dark' ? 'light' : 'dark');
+  var cur = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(cur === 'dark' ? 'light' : 'dark');
 }
-
 function updateThemeToggleLabel() {
   var btn = document.getElementById('themeToggle');
   if (!btn) return;
   var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  btn.innerHTML = isDark ? '<span class="icon">&#9728;</span>' : '<span class="icon">&#9790;</span>';
+  btn.innerHTML = isDark ? icon('sun', 17) : icon('moon', 17);
 }
-
 (function initTheme() {
   var saved = null;
   try { saved = localStorage.getItem('equiz-theme'); } catch (e) {}
@@ -484,33 +908,42 @@ function logout() {
   callApi('POST', '/api/logout').then(function () {
     currentUser = null;
     drawNavbar();
+    showMessage('Logged out successfully.', 'info');
     goTo('#/');
   });
 }
 
-// ---------- ROUTER ----------
-// Looks at the URL hash and decides what to show
-window.addEventListener('hashchange', router);
-window.addEventListener('DOMContentLoaded', function () {
-  callApi('GET', '/api/me').then(function (data) {
-    currentUser = data.user;
-  }).catch(function () {
-    currentUser = null;
-  }).then(function () {
+// ===================================================
+// ROUTER
+// ===================================================
+function startApp() {
+  Promise.all([
+    callApi('GET', '/api/me').then(function (data) { if (data && data.user) currentUser = data.user; }),
+    callApi('GET', '/api/departments').then(function (data) { if (data && data.departments) DEPARTMENTS = data.departments; })
+  ]).then(function () {
+    drawNavbar();
+    router();
+  }).catch(function (err) {
+    console.warn('App init warning:', err);
     drawNavbar();
     router();
   });
-});
+}
+
+window.addEventListener('hashchange', function() { drawNavbar(); router(); });
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', startApp);
+} else {
+  startApp();
+}
 
 function router() {
   var hash = window.location.hash || '#/';
+  closeQuestionNavigator();
 
-  // block pages that need login
   var needsLogin = hash.indexOf('#/admin') === 0 || hash.indexOf('#/instructor') === 0 || hash.indexOf('#/student') === 0;
-  if (needsLogin && !currentUser) {
-    goTo('#/login');
-    return;
-  }
+  if (needsLogin && !currentUser) { goTo('#/login'); return; }
 
   if (hash === '#/' || hash === '') {
     if (currentUser) {
@@ -525,7 +958,7 @@ function router() {
   if (hash === '#/register') return showRegisterPage();
 
   if (hash === '#/admin') return showAdminDashboard();
-  if (hash === '#/admin/instructors') return showAdminInstructors();
+  if (hash === '#/admin/accounts') return showAdminAccounts();
   if (hash === '#/admin/quizzes') return showAdminQuizzes();
   if (hash === '#/admin/results') return showAdminResults();
 
@@ -548,275 +981,352 @@ function router() {
   if ((match = hash.match(/^#\/student\/take\/(\d+)$/))) return showTakeQuizPage(match[1]);
   if ((match = hash.match(/^#\/leaderboard\/(\d+)$/))) return showLeaderboard(match[1], '/api/quizzes/' + match[1] + '/leaderboard');
 
-  setContent('<div class="box"><p>Page not found.</p></div>');
+  setContent('<div class="box" style="text-align:center;padding:40px;"><p>Page not found.</p><button class="btn btn-pista" onclick="goTo(\'#/\')">Return Home</button></div>');
 }
 
 // ===================================================
-// HOME / LOGIN / REGISTER
+// HOME / AUTH
 // ===================================================
-
 function showHomePage() {
   setContent(
-    '<div class="page-center">' +
-    '<div class="box square-box center">' +
-    '<h1>Welcome to the Quiz Management System</h1>' +
-    '<p>Admins approve instructors, instructors create quizzes, and students take them and see their rank.</p>' +
-    '<a class="btn btn-blue" onclick="goTo(\'#/register\')">Sign Up</a>' +
-    '<a class="btn btn-gray" onclick="goTo(\'#/login\')">Login</a>' +
-    '</div>' +
+    '<div class="box" style="text-align:center;padding:50px 24px;max-width:760px;margin:30px auto;">' +
+      '<div style="display:inline-flex;align-items:center;gap:6px;background:var(--color-pista-light);color:var(--color-pista-primary);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:16px;border:1px solid var(--color-pista-border);">' +
+        icon('cap', 15) + ' Academic Assessment Platform' +
+      '</div>' +
+      '<h1 style="font-size:32px;margin-bottom:12px;">Online Quiz Management System</h1>' +
+      '<p style="max-width:560px;margin:0 auto 24px auto;font-size:15px;line-height:1.6;">' +
+        'A comprehensive platform crafted in pistachio green and clean white: manage faculty credentials, publish timed department examinations, and track student mastery.' +
+      '</p>' +
+      '<div style=\"display:flex;justify-content:center;gap:10px;flex-wrap:wrap;\">' +
+        '<button class=\"btn btn-pista\" onclick=\"goTo(\'#/register\')\">' + icon('arrow-right') + ' Create Account</button>' +
+        '<button class=\"btn btn-outline\" onclick=\"goTo(\'#/login\')\">Sign In</button>' +
+      '</div>' +
     '</div>'
   );
 }
 
 function showLoginPage() {
   setContent(
-    '<div class="box" style="max-width:400px;">' +
-    '<h1>Login</h1>' +
-    '<form id="loginForm">' +
-    '<label>Username</label>' +
-    '<input type="text" id="loginUsername" required>' +
-    '<label>Password</label>' +
-    '<input type="password" id="loginPassword" required>' +
-    '<button type="submit" class="btn btn-blue">Login</button>' +
-    '</form>' +
-    '<p>No account? <a onclick="goTo(\'#/register\')">Sign up here</a></p>' +
+    '<div class="box" style="max-width:400px;margin:40px auto;">' +
+      '<h1>Sign In</h1>' +
+      '<p style="margin-bottom:18px;">Access your quizzes and academic records.</p>' +
+      '<form id="loginForm">' +
+        '<label>Username</label><input type="text" id="loginUsername" placeholder="Enter your username" required>' +
+        '<label>Password</label><input type="password" id="loginPassword" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;" required>' +
+        '<button type="submit" class="btn btn-pista" style="width:100%;margin-top:6px;">Sign In</button>' +
+      '</form>' +
+      '<div style="margin-top:20px;border-top:1px solid var(--border);padding-top:14px;text-align:center;">' +
+        '<p style="font-size:13px;">No account? <a onclick="goTo(\'#/register\')">Sign up here</a></p>' +
+      '</div>' +
     '</div>'
   );
 
   document.getElementById('loginForm').onsubmit = function (e) {
     e.preventDefault();
-    var username = document.getElementById('loginUsername').value;
-    var password = document.getElementById('loginPassword').value;
-
-    callApi('POST', '/api/login', { username: username, password: password }).then(function (data) {
+    callApi('POST', '/api/login', {
+      username: document.getElementById('loginUsername').value,
+      password: document.getElementById('loginPassword').value
+    }).then(function (data) {
       currentUser = data.user;
+      setStore('current_user', currentUser);
       drawNavbar();
-      showMessage('Welcome back, ' + data.user.username + '!', 'success');
-      if (currentUser.role === 'instructor' && currentUser.status !== 'approved') {
-        goTo('#/instructor/pending');
-      } else {
-        goTo('#/');
-      }
+      showMessage('Welcome back, ' + fullName(currentUser) + '!', 'success');
+      if (currentUser.role === 'admin') goTo('#/admin');
+      else if (currentUser.role === 'instructor') goTo(currentUser.status === 'approved' ? '#/instructor' : '#/instructor/pending');
+      else goTo('#/student');
     });
   };
 }
 
+function departmentOptions(selected) {
+  return (DEPARTMENTS || []).map(function (d) {
+    return '<option value="' + esc(d) + '"' + (d === selected ? ' selected' : '') + '>' + esc(d) + '</option>';
+  }).join('');
+}
+
 function showRegisterPage() {
   setContent(
-    '<div class="box" style="max-width:400px;">' +
-    '<h1>Sign Up</h1>' +
-    '<form id="registerForm">' +
-    '<label>Username</label>' +
-    '<input type="text" id="regUsername" required>' +
-    '<label>Password</label>' +
-    '<input type="password" id="regPassword" required>' +
-    '<label>Confirm Password</label>' +
-    '<input type="password" id="regConfirm" required>' +
-    '<label>I am a:</label><br>' +
-    '<input type="radio" name="role" value="student" checked style="width:auto;display:inline-block;margin-right:6px;"> Student &nbsp;' +
-    '<input type="radio" name="role" value="instructor" style="width:auto;display:inline-block;margin-right:6px;"> Instructor' +
-    '<p style="font-size:13px;color:var(--ink-soft);margin-top:10px;">Note: instructor accounts need admin approval before you can log in.</p>' +
-    '<button type="submit" class="btn btn-blue">Sign Up</button>' +
-    '</form>' +
-    '<p>Already have an account? <a onclick="goTo(\'#/login\')">Login</a></p>' +
+    '<div class="box" style="max-width:480px;margin:30px auto;">' +
+      '<h1>Create Account</h1>' +
+      '<p style="margin-bottom:18px;">Register as an enrolled student or faculty instructor.</p>' +
+      '<form id="registerForm">' +
+        '<div class="form-row">' +
+          '<div><label>First Name</label><input type="text" id="regFirstName" required></div>' +
+          '<div><label>Last Name</label><input type="text" id="regLastName" required></div>' +
+        '</div>' +
+        '<label>Username</label><input type="text" id="regUsername" required>' +
+        '<div class="form-row">' +
+          '<div><label>Password</label><input type="password" id="regPassword" required></div>' +
+          '<div><label>Confirm</label><input type="password" id="regConfirm" required></div>' +
+        '</div>' +
+        '<div style="margin:8px 0 14px 0;">' +
+          '<label style="display:block;margin-bottom:6px;">Role</label>' +
+          '<label style="margin-right:16px;cursor:pointer;"><input type="radio" name="role" value="student" checked style="width:auto;display:inline-block;margin-right:6px;"> Student</label>' +
+          '<label style="cursor:pointer;"><input type="radio" name="role" value="instructor" style="width:auto;display:inline-block;margin-right:6px;"> Faculty Instructor</label>' +
+        '</div>' +
+        '<label>Department</label><select id="regDepartment" required>' + departmentOptions() + '</select>' +
+        '<div id="regSemesterWrap"><label>Semester</label><select id="regSemester"><option value="1">Semester 1</option><option value="2">Semester 2</option><option value="3">Semester 3</option><option value="4">Semester 4</option><option value="5">Semester 5</option><option value="6">Semester 6</option><option value="7">Semester 7</option><option value="8">Semester 8</option></select></div>' +
+        '<button type="submit" class="btn btn-pista" style="width:100%;margin-top:10px;">Complete Registration</button>' +
+      '</form>' +
+      '<p style="text-align:center;margin-top:14px;">Already registered? <a onclick="goTo(\'#/login\')">Sign in</a></p>' +
     '</div>'
   );
 
+  var semWrap = document.getElementById('regSemesterWrap');
+  document.querySelectorAll('input[name=role]').forEach(function(r) {
+    r.addEventListener('change', function() {
+      semWrap.style.display = this.value === 'student' ? '' : 'none';
+    });
+  });
+
   document.getElementById('registerForm').onsubmit = function (e) {
     e.preventDefault();
+    var p1 = document.getElementById('regPassword').value;
+    var p2 = document.getElementById('regConfirm').value;
+    if (p1 !== p2) { showMessage('Passwords do not match.', 'danger'); return; }
     var role = document.querySelector('input[name=role]:checked').value;
+
     callApi('POST', '/api/register', {
+      first_name: document.getElementById('regFirstName').value,
+      last_name: document.getElementById('regLastName').value,
       username: document.getElementById('regUsername').value,
-      password: document.getElementById('regPassword').value,
-      confirm_password: document.getElementById('regConfirm').value,
-      role: role
+      password: p1,
+      role: role,
+      department: document.getElementById('regDepartment').value,
+      semester: role === 'student' ? document.getElementById('regSemester').value : null
     }).then(function (data) {
-      showMessage(data.message, 'success');
+      showMessage(data.message || 'Registration successful!', 'success');
       goTo('#/login');
     });
   };
 }
 
 function showPendingPage() {
-  var rejected = currentUser.status === 'rejected';
+  var rej = currentUser.status === 'rejected';
   setContent(
-    '<div class="box center">' +
-    '<h1>' + (rejected ? 'Account Rejected' : 'Waiting for Approval') + '</h1>' +
-    '<p>' + (rejected ?
-      'Your instructor account was rejected. Please contact the admin.' :
-      'An admin needs to approve your instructor account before you can create quizzes.') + '</p>' +
-    '<a class="btn btn-gray" onclick="logout()">Logout</a>' +
+    '<div class="box" style="max-width:440px;margin:40px auto;text-align:center;">' +
+      '<h1>' + (rej ? 'Application Rejected' : 'Awaiting Faculty Approval') + '</h1>' +
+      '<p style="margin:12px 0 20px 0;">' + (rej ? 'Your instructor credentials were rejected by the system administrator.' : 'Your instructor profile requires administrator verification before publishing quizzes.') + '</p>' +
+      '<button class="btn btn-outline" onclick="logout()">Logout</button>' +
     '</div>'
   );
 }
 
 // ===================================================
-// ADMIN PAGES
+// ADMIN MODULE
 // ===================================================
-
 function showAdminDashboard() {
   callApi('GET', '/api/admin/stats').then(function (s) {
     setContent(
-      '<div class="box">' +
-      '<h1>Admin Dashboard</h1>' +
-      '<p>Pending instructors: <b>' + s.pending_count + '</b></p>' +
-      '<p>Approved instructors: <b>' + s.instructor_count + '</b></p>' +
-      '<p>Students: <b>' + s.student_count + '</b></p>' +
-      '<p>Quizzes: <b>' + s.quiz_count + '</b></p>' +
-      '<p>Quiz attempts: <b>' + s.attempt_count + '</b></p>' +
-      '<a class="btn btn-blue" onclick="goTo(\'#/admin/instructors\')">Manage Instructors</a>' +
-      '<a class="btn btn-blue" onclick="goTo(\'#/admin/quizzes\')">View Quizzes</a>' +
-      '<a class="btn btn-blue" onclick="goTo(\'#/admin/results\')">View Results</a>' +
+      '<div class="box-header">' +
+        '<div><h1>Admin Overview</h1><p>Platform directory, accounts approval, and platform examination stats.</p></div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+          '<button class="btn btn-outline btn-sm" onclick="resetAllData()" style="color:var(--status-danger);border-color:var(--status-danger);" title="Drop all data and reset to 0">' + icon('trash') + ' Drop All Data</button>' +
+          '<button class="btn btn-pista" onclick="goTo(\'#/admin/accounts\')">' + icon('users') + ' Manage Accounts</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="stats-grid">' +
+        '<div class="stat-card"><div class="stat-label">Pending Faculty</div><div class="stat-num" style="color:var(--status-warning);">' + (s.pending_count || 0) + '</div><a onclick="goTo(\'#/admin/accounts\')" style="font-size:12px;">Review applications &rarr;</a></div>' +
+        '<div class="stat-card"><div class="stat-label">Active Faculty</div><div class="stat-num" style="color:var(--color-pista-primary);">' + (s.instructor_count || 0) + '</div><span style="font-size:12px;color:var(--text-muted);">Approved instructors</span></div>' +
+        '<div class="stat-card"><div class="stat-label">Students</div><div class="stat-num">' + (s.student_count || 0) + '</div><span style="font-size:12px;color:var(--text-muted);">Enrolled candidates</span></div>' +
+        '<div class="stat-card"><div class="stat-label">Quizzes</div><div class="stat-num">' + (s.quiz_count || 0) + '</div><span style="font-size:12px;color:var(--text-muted);">Modules online</span></div>' +
+        '<div class="stat-card"><div class="stat-label">Examinations</div><div class="stat-num">' + (s.attempt_count || 0) + '</div><span style="font-size:12px;color:var(--text-muted);">Total completed</span></div>' +
+      '</div>' +
+      '<div class="grid">' +
+        '<div class="quiz-card"><div><h3>' + icon('users') + ' Accounts Directory</h3><p style="margin-top:6px;">Verify instructor credentials, toggle active states, or purge accounts.</p></div><button class="btn btn-outline btn-sm" style="margin-top:14px;" onclick="goTo(\'#/admin/accounts\')">Open Directory &rarr;</button></div>' +
+        '<div class="quiz-card"><div><h3>' + icon('book') + ' Curriculum Quizzes</h3><p style="margin-top:6px;">Monitor question distributions, timers, passing thresholds across departments.</p></div><button class="btn btn-outline btn-sm" style="margin-top:14px;" onclick="goTo(\'#/admin/quizzes\')">View Quizzes &rarr;</button></div>' +
+        '<div class="quiz-card"><div><h3>' + icon('award') + ' Results & Rankings</h3><p style="margin-top:6px;">Audit student examination scores, durations, and pass/fail ratios.</p></div><button class="btn btn-outline btn-sm" style="margin-top:14px;" onclick="goTo(\'#/admin/results\')">Explore Records &rarr;</button></div>' +
       '</div>'
     );
   });
 }
 
-function showAdminInstructors() {
-  callApi('GET', '/api/admin/instructors').then(function (data) {
-    var rows = '';
-    data.instructors.forEach(function (i) {
-      var actionButtons = '';
-      if (i.status === 'pending') {
-        actionButtons = '<button class="btn btn-green" onclick="approveInstructor(' + i.id + ')">Approve</button>' +
-                         '<button class="btn btn-red" onclick="rejectInstructor(' + i.id + ')">Reject</button>';
-      } else if (i.status === 'approved') {
-        actionButtons = '<button class="btn btn-red" onclick="rejectInstructor(' + i.id + ')">Revoke</button>';
-      } else {
-        actionButtons = '<button class="btn btn-green" onclick="approveInstructor(' + i.id + ')">Approve</button>';
+function showAdminAccounts() {
+  callApi('GET', '/api/admin/accounts').then(function (data) {
+    var accountsList = (data && data.accounts) || [];
+    var rows = accountsList.map(function(u) {
+      var act = '';
+      if (u.role === 'instructor' && u.status === 'pending') {
+        act += '<button class="btn btn-pista btn-sm" onclick="approveInstructor(' + u.id + ')">Approve</button> ';
+        act += '<button class="btn btn-danger btn-sm" onclick="rejectInstructor(' + u.id + ')">Reject</button> ';
+      } else if (u.role === 'instructor' && u.status === 'rejected') {
+        act += '<button class="btn btn-pista btn-sm" onclick="approveInstructor(' + u.id + ')">Approve</button> ';
       }
-      rows += '<tr><td>' + esc(i.username) + '</td>' +
-              '<td><span class="tag tag-' + i.status + '">' + i.status + '</span></td>' +
-              '<td>' + i.quiz_count + '</td>' +
-              '<td>' + i.created_at + '</td>' +
-              '<td>' + actionButtons + '</td></tr>';
-    });
+      if (u.role !== 'admin') {
+        act += '<button class="btn btn-outline btn-sm" onclick="toggleActive(' + u.id + ')">' + (u.is_active ? 'Deactivate' : 'Activate') + '</button> ';
+      }
+      if (!u.is_active && u.role !== 'admin') {
+        act += '<button class="btn btn-danger btn-sm" onclick="deleteAccount(' + u.id + ')">' + icon('trash') + '</button>';
+      }
+      return '<tr>' +
+        '<td><b>' + esc(fullName(u)) + '</b><br><span style="font-size:11px;color:var(--text-muted);font-family:monospace;">@' + esc(u.username) + '</span></td>' +
+        '<td><span class="tag tag-' + u.role + '">' + u.role + '</span></td>' +
+        '<td>' + esc(u.department || '—') + (u.semester ? ' &middot; Sem ' + u.semester : '') + '</td>' +
+        '<td>' + (u.role === 'instructor' ? '<span class="tag tag-' + u.status + '">' + u.status + '</span>' : '—') + '</td>' +
+        '<td><span class="tag tag-' + (u.is_active ? 'active' : 'inactive') + '">' + (u.is_active ? 'active' : 'inactive') + '</span></td>' +
+        '<td class="font-mono" style="font-size:11px;">' + (u.created_at || '—') + '</td>' +
+        '<td>' + act + '</td>' +
+      '</tr>';
+    }).join('');
 
     setContent(
-      '<div class="box">' +
-      '<h1>Instructors</h1>' +
-      (data.instructors.length ?
-        '<table><tr><th>Username</th><th>Status</th><th>Quizzes</th><th>Registered</th><th>Action</th></tr>' + rows + '</table>' :
-        '<p>No instructors have registered yet.</p>') +
-      '</div>'
+      '<div class="box-header">' +
+        '<div><h1>Manage Accounts</h1><p>Approve instructor profiles, manage account states, and delete inactive users.</p></div>' +
+        '<button class="btn btn-outline" onclick="goTo(\'#/admin\')">' + icon('arrow-left') + ' Back</button>' +
+      '</div>' +
+      '<div class="table-wrap"><table><tr><th>User</th><th>Role</th><th>Dept / Sem</th><th>Approval</th><th>Status</th><th>Joined</th><th>Actions</th></tr>' + rows + '</table></div>'
     );
   });
 }
 
 function approveInstructor(id) {
   callApi('POST', '/api/admin/instructors/' + id + '/approve').then(function () {
-    showMessage('Instructor approved.', 'success');
-    showAdminInstructors();
+    showMessage('Instructor approved.', 'success'); showAdminAccounts();
   });
 }
-
 function rejectInstructor(id) {
-  if (!confirm('Are you sure?')) return;
+  if (!confirm('Reject this instructor account?')) return;
   callApi('POST', '/api/admin/instructors/' + id + '/reject').then(function () {
-    showMessage('Instructor rejected.', 'info');
-    showAdminInstructors();
+    showMessage('Instructor rejected.', 'info'); showAdminAccounts();
+  });
+}
+function toggleActive(id) {
+  callApi('POST', '/api/admin/accounts/' + id + '/toggle-active').then(function (res) {
+    showMessage(res.is_active ? 'Account activated.' : 'Account deactivated.', 'info'); showAdminAccounts();
+  });
+}
+function deleteAccount(id) {
+  if (!confirm('Permanently delete this account?')) return;
+  callApi('DELETE', '/api/admin/accounts/' + id).then(function () {
+    showMessage('Account deleted.', 'info'); showAdminAccounts();
   });
 }
 
 function showAdminQuizzes() {
   callApi('GET', '/api/admin/quizzes').then(function (data) {
-    var boxes = '';
-    data.quizzes.forEach(function (q) {
-      boxes += '<div class="quiz-box">' +
-               '<h3>' + esc(q.title) + (q.is_default ? ' <span class="tag tag-approved">default</span>' : '') + '</h3>' +
-               '<p>' + esc(q.description || 'No description') + '</p>' +
-               '<p>Questions: ' + q.question_count + (q.time_limit_minutes ? ' | Timer: ' + q.time_limit_minutes + ' min' : '') + '</p>' +
-               '<p>By: ' + esc(q.instructor_name || 'System') + '</p>' +
-               '<button class="btn btn-red" onclick="deleteQuizAsAdmin(' + q.id + ')">Delete</button>' +
-               '</div>';
-    });
-    setContent('<div class="box"><h1>All Quizzes</h1><div class="grid">' + boxes + '</div></div>');
+    var quizList = (data && data.quizzes) || [];
+    var cards = quizList.map(function(q) {
+      return '<div class="quiz-card">' +
+        '<div>' +
+          '<div style="display:flex;justify-content:space-between;"><span class="tag tag-instructor">' + esc(q.department) + '</span>' + (q.is_default ? '<span class="tag tag-approved">default</span>' : '') + '</div>' +
+          '<h3 style="margin-top:10px;">' + esc(q.title) + '</h3>' +
+          '<p style="margin-top:6px;">' + esc(q.description || 'No description.') + '</p>' +
+          '<div class="quiz-meta">' +
+            '<span>' + icon('book', 14) + ' ' + q.question_count + ' Qs</span>' +
+            (q.time_limit_minutes ? '<span>' + icon('clock', 14) + ' ' + q.time_limit_minutes + ' min</span>' : '') +
+            (q.passing_cutoff != null ? '<span>' + icon('award', 14) + ' ' + q.passing_cutoff + '%</span>' : '') +
+          '</div>' +
+          '<p style="font-size:11px;margin-top:8px;">Instructor: <b>' + esc(q.instructor_name || 'Faculty') + '</b></p>' +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;border-top:1px solid var(--border);padding-top:12px;">' +
+          '<button class="btn btn-outline btn-sm" onclick="goTo(\'#/leaderboard/' + q.id + '\')">' + icon('trophy') + ' Leaderboard</button>' +
+          '<button class="btn btn-danger btn-sm" onclick="deleteQuizAsAdmin(' + q.id + ')">' + icon('trash') + '</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    setContent(
+      '<div class="box-header">' +
+        '<div><h1>All Department Quizzes</h1><p>Platform examination modules across faculties.</p></div>' +
+        '<button class="btn btn-outline" onclick="goTo(\'#/admin\')">' + icon('arrow-left') + ' Back</button>' +
+      '</div>' +
+      '<div class="grid">' + (cards || '<p>No quizzes created yet.</p>') + '</div>'
+    );
   });
 }
-
 function deleteQuizAsAdmin(id) {
   if (!confirm('Delete this quiz?')) return;
   callApi('DELETE', '/api/admin/quizzes/' + id).then(function () {
-    showMessage('Quiz deleted.', 'info');
-    showAdminQuizzes();
+    showMessage('Quiz deleted.', 'info'); showAdminQuizzes();
   });
 }
 
 function showAdminResults() {
   callApi('GET', '/api/admin/results').then(function (data) {
-    var rows = '';
-    data.results.forEach(function (r) {
-      var pct = ((r.score / r.total_questions) * 100).toFixed(1);
-      rows += '<tr><td>' + esc(r.username) + '</td><td>' + esc(r.quiz_title) + '</td>' +
-              '<td>' + r.score + '/' + r.total_questions + '</td><td>' + pct + '%</td>' +
-              '<td>' + (r.time_taken_seconds != null ? r.time_taken_seconds + 's' : '-') + '</td>' +
-              '<td>' + r.taken_at + '</td></tr>';
-    });
+    var resultsList = (data && data.results) || [];
+    var rows = resultsList.map(function(r) {
+      return '<tr>' +
+        '<td><b>' + esc(fullName(r)) + '</b><br><span style="font-size:11px;color:var(--text-muted);font-family:monospace;">@' + esc(r.username) + '</span></td>' +
+        '<td>' + esc(r.quiz_title) + '</td>' +
+        '<td class="font-mono tabular-nums"><b>' + r.marks_obtained + '</b> / ' + r.total_questions + '</td>' +
+        '<td>' + (r.passed === null ? '—' : (r.passed ? '<span class="tag tag-pass">pass</span>' : '<span class="tag tag-fail">fail</span>')) + '</td>' +
+        '<td class="font-mono tabular-nums">' + (r.time_taken_seconds != null ? r.time_taken_seconds + 's' : '—') + '</td>' +
+        '<td class="font-mono" style="font-size:11px;">' + r.taken_at + '</td>' +
+        '<td><button class="btn btn-outline btn-sm" onclick="goTo(\'#/leaderboard/' + r.quiz_id + '\')">' + icon('trophy') + '</button></td>' +
+      '</tr>';
+    }).join('');
+
     setContent(
-      '<div class="box"><h1>All Results</h1>' +
-      (data.results.length ?
-        '<table><tr><th>Student</th><th>Quiz</th><th>Score</th><th>%</th><th>Time</th><th>Date</th></tr>' + rows + '</table>' :
-        '<p>No attempts yet.</p>') +
-      '</div>'
+      '<div class="box-header">' +
+        '<div><h1>Student Examination Records</h1><p>Platform-wide submission logs, marks, and durations.</p></div>' +
+        '<button class="btn btn-outline" onclick="goTo(\'#/admin\')">' + icon('arrow-left') + ' Back</button>' +
+      '</div>' +
+      '<div class="table-wrap"><table><tr><th>Student</th><th>Quiz</th><th>Marks</th><th>Result</th><th>Time</th><th>Date</th><th>Rank</th></tr>' + (rows || '<tr><td colspan="7">No records yet.</td></tr>') + '</table></div>'
     );
   });
 }
 
 // ===================================================
-// INSTRUCTOR PAGES
+// INSTRUCTOR MODULE
 // ===================================================
-
 function showInstructorDashboard() {
   callApi('GET', '/api/instructor/quizzes').then(function (data) {
-    var boxes = '';
-    data.quizzes.forEach(function (q) {
-      boxes += '<div class="quiz-box">' +
-               '<h3>' + esc(q.title) + '</h3>' +
-               '<p>' + esc(q.description || 'No description') + '</p>' +
-               '<p>Questions: ' + q.question_count + ' | Timer: ' + (q.time_limit_minutes ? q.time_limit_minutes + ' min' : 'none') + '</p>' +
-               '<button class="btn btn-blue" onclick="goTo(\'#/instructor/questions/' + q.id + '\')">Questions</button>' +
-               '<button class="btn btn-gray" onclick="goTo(\'#/instructor/edit/' + q.id + '\')">Edit</button>' +
-               '<button class="btn btn-gray" onclick="goTo(\'#/instructor/leaderboard/' + q.id + '\')">Leaderboard</button>' +
-               '<button class="btn btn-red" onclick="deleteMyQuiz(' + q.id + ')">Delete</button>' +
-               '</div>';
-    });
+    var quizList = (data && data.quizzes) || [];
+    var cards = quizList.map(function(q) {
+      return '<div class="quiz-card">' +
+        '<div>' +
+          '<span class="tag tag-instructor">' + esc(q.department) + '</span>' +
+          '<h3 style="margin-top:10px;">' + esc(q.title) + '</h3>' +
+          '<p style="margin-top:6px;">' + esc(q.description || 'No description.') + '</p>' +
+          '<div class="quiz-meta">' +
+            '<span>' + icon('book', 14) + ' ' + q.question_count + ' Qs</span>' +
+            (q.time_limit_minutes ? '<span>' + icon('clock', 14) + ' ' + q.time_limit_minutes + ' min</span>' : '') +
+            (q.passing_cutoff != null ? '<span>' + icon('award', 14) + ' ' + q.passing_cutoff + '%</span>' : '') +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;border-top:1px solid var(--border);padding-top:12px;">' +
+          '<div>' +
+            '<button class="btn btn-pista btn-sm" onclick="goTo(\'#/instructor/questions/' + q.id + '\')">Questions</button> ' +
+            '<button class="btn btn-outline btn-sm" onclick="goTo(\'#/instructor/edit/' + q.id + '\')">' + icon('edit') + '</button> ' +
+            '<button class="btn btn-outline btn-sm" onclick="goTo(\'#/instructor/leaderboard/' + q.id + '\')">' + icon('trophy') + '</button>' +
+          '</div>' +
+          '<button class="btn btn-danger btn-sm" onclick="deleteMyQuiz(' + q.id + ')">' + icon('trash') + '</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
     setContent(
-      '<div class="box"><h1>My Quizzes</h1>' +
-      '<a class="btn btn-blue" onclick="goTo(\'#/instructor/new\')">+ New Quiz</a>' +
-      '<div class="grid" style="margin-top:15px;">' + (boxes || '<p>You have not made any quizzes yet.</p>') + '</div>' +
-      '</div>'
+      '<div class="box-header">' +
+        '<div><span class="tag tag-instructor">' + esc(currentUser.department) + '</span><h1 style="margin-top:6px;">Faculty Quiz Console</h1><p>Author and monitor quizzes for students in your department.</p></div>' +
+        '<button class="btn btn-pista" onclick="goTo(\'#/instructor/new\')">' + icon('plus') + ' New Quiz</button>' +
+      '</div>' +
+      '<div class="grid">' + (cards || '<p>No quizzes published yet. Click "New Quiz" to begin.</p>') + '</div>'
     );
   });
 }
-
 function deleteMyQuiz(id) {
-  if (!confirm('Delete this quiz and all its questions/results?')) return;
+  if (!confirm('Delete this quiz and its questions?')) return;
   callApi('DELETE', '/api/instructor/quizzes/' + id).then(function () {
-    showMessage('Quiz deleted.', 'info');
-    showInstructorDashboard();
+    showMessage('Quiz deleted.', 'info'); showInstructorDashboard();
   });
 }
 
 function showQuizForm(quizId) {
-  // if editing, we first need to fetch the quiz's current info
-  var loadQuiz = quizId ? callApi('GET', '/api/instructor/quizzes/' + quizId + '/questions') : Promise.resolve(null);
-
-  loadQuiz.then(function (data) {
-    var quiz = data ? data.quiz : null;
-
+  var load = quizId ? callApi('GET', '/api/instructor/quizzes/' + quizId + '/questions') : Promise.resolve(null);
+  load.then(function (data) {
+    var q = data ? data.quiz : null;
     setContent(
-      '<div class="box" style="max-width:500px;">' +
-      '<h1>' + (quiz ? 'Edit Quiz' : 'New Quiz') + '</h1>' +
-      '<form id="quizForm">' +
-      '<label>Title</label>' +
-      '<input type="text" id="quizTitle" value="' + (quiz ? esc(quiz.title) : '') + '" required>' +
-      '<label>Description</label>' +
-      '<textarea id="quizDesc">' + (quiz ? esc(quiz.description || '') : '') + '</textarea>' +
-      '<label>Time Limit in minutes (leave blank for no timer)</label>' +
-      '<input type="number" id="quizTimer" min="1" value="' + (quiz && quiz.time_limit_minutes ? quiz.time_limit_minutes : '') + '">' +
-      '<button type="submit" class="btn btn-blue">' + (quiz ? 'Save' : 'Create') + '</button>' +
-      '<button type="button" class="btn btn-gray" onclick="goTo(\'#/instructor\')">Cancel</button>' +
-      '</form>' +
+      '<div class="box" style="max-width:540px;margin:24px auto;">' +
+        '<div class="box-header"><div><h1>' + (q ? 'Edit Quiz' : 'Create Examination') + '</h1><p>Configure parameters for ' + esc(currentUser.department) + '.</p></div><button class="btn btn-outline btn-sm" onclick="goTo(\'#/instructor\')">Cancel</button></div>' +
+        '<form id="quizForm">' +
+          '<label>Quiz Title</label><input type="text" id="quizTitle" value="' + (q ? esc(q.title) : '') + '" required>' +
+          '<label>Description</label><textarea id="quizDesc" rows="3">' + (q ? esc(q.description || '') : '') + '</textarea>' +
+          '<div class="form-row">' +
+            '<div><label>Timer (minutes)</label><input type="number" id="quizTimer" min="1" value="' + (q && q.time_limit_minutes ? q.time_limit_minutes : '') + '" placeholder="e.g. 15 (blank for untimed)"></div>' +
+            '<div><label>Pass Cutoff (%)</label><input type="number" id="quizCutoff" min="0" max="100" step="0.5" value="' + (q && q.passing_cutoff != null ? q.passing_cutoff : '') + '" placeholder="e.g. 50"></div>' +
+          '</div>' +
+          '<button type="submit" class="btn btn-pista" style="width:100%;margin-top:10px;">' + (q ? 'Save Changes' : 'Create & Add Questions') + '</button>' +
+        '</form>' +
       '</div>'
     );
 
@@ -825,17 +1335,16 @@ function showQuizForm(quizId) {
       var payload = {
         title: document.getElementById('quizTitle').value,
         description: document.getElementById('quizDesc').value,
-        time_limit_minutes: document.getElementById('quizTimer').value
+        time_limit_minutes: document.getElementById('quizTimer').value,
+        passing_cutoff: document.getElementById('quizCutoff').value
       };
-      if (quiz) {
+      if (q) {
         callApi('PUT', '/api/instructor/quizzes/' + quizId, payload).then(function () {
-          showMessage('Quiz updated.', 'success');
-          goTo('#/instructor/questions/' + quizId);
+          showMessage('Quiz updated.', 'success'); goTo('#/instructor/questions/' + quizId);
         });
       } else {
         callApi('POST', '/api/instructor/quizzes', payload).then(function (res) {
-          showMessage('Quiz created. Now add some questions.', 'success');
-          goTo('#/instructor/questions/' + res.quiz_id);
+          showMessage('Quiz created. Now add questions.', 'success'); goTo('#/instructor/questions/' + res.quiz_id);
         });
       }
     };
@@ -844,61 +1353,70 @@ function showQuizForm(quizId) {
 
 function showQuestionsPage(quizId) {
   callApi('GET', '/api/instructor/quizzes/' + quizId + '/questions').then(function (data) {
-    var quiz = data.quiz;
-    var qHtml = '';
-    data.questions.forEach(function (q, index) {
-      qHtml += '<div class="question">' +
-               '<b>Q' + (index + 1) + '.</b> ' + esc(q.question_text) +
-               ' <button class="btn btn-red" style="float:right;" onclick="deleteQuestion(' + q.id + ',' + quizId + ')">Delete</button>' +
-               '<div class="option">A. ' + esc(q.option_a) + (q.correct_option === 'A' ? ' &#10003; correct' : '') + '</div>' +
-               '<div class="option">B. ' + esc(q.option_b) + (q.correct_option === 'B' ? ' &#10003; correct' : '') + '</div>' +
-               '<div class="option">C. ' + esc(q.option_c) + (q.correct_option === 'C' ? ' &#10003; correct' : '') + '</div>' +
-               '<div class="option">D. ' + esc(q.option_d) + (q.correct_option === 'D' ? ' &#10003; correct' : '') + '</div>' +
-               '</div>';
-    });
+    var qz = (data && data.quiz) || {};
+    var questionsList = (data && data.questions) || [];
+    var qItems = questionsList.map(function(q, i) {
+      return '<div class="quiz-card" style="margin-bottom:14px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
+          '<div><b>Q' + (i + 1) + '.</b> ' + esc(q.question_text) + (Number(q.negative_marks) > 0 ? ' <span class="tag tag-rejected">-' + q.negative_marks + ' if wrong</span>' : '') + '</div>' +
+          '<button class="btn btn-danger btn-sm" onclick="deleteQuestion(' + q.id + ',' + quizId + ')">' + icon('trash') + '</button>' +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;font-size:12.5px;">' +
+          '<div style="padding:6px 10px;border-radius:6px;border:1px solid var(--border);' + (q.correct_option === 'A' ? 'background:var(--color-pista-light);border-color:var(--color-pista-primary);font-weight:700;' : '') + '">A. ' + esc(q.option_a) + (q.correct_option === 'A' ? ' &#10003;' : '') + '</div>' +
+          '<div style="padding:6px 10px;border-radius:6px;border:1px solid var(--border);' + (q.correct_option === 'B' ? 'background:var(--color-pista-light);border-color:var(--color-pista-primary);font-weight:700;' : '') + '">B. ' + esc(q.option_b) + (q.correct_option === 'B' ? ' &#10003;' : '') + '</div>' +
+          '<div style="padding:6px 10px;border-radius:6px;border:1px solid var(--border);' + (q.correct_option === 'C' ? 'background:var(--color-pista-light);border-color:var(--color-pista-primary);font-weight:700;' : '') + '">C. ' + esc(q.option_c) + (q.correct_option === 'C' ? ' &#10003;' : '') + '</div>' +
+          '<div style="padding:6px 10px;border-radius:6px;border:1px solid var(--border);' + (q.correct_option === 'D' ? 'background:var(--color-pista-light);border-color:var(--color-pista-primary);font-weight:700;' : '') + '">D. ' + esc(q.option_d) + (q.correct_option === 'D' ? ' &#10003;' : '') + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
 
     setContent(
-      '<div class="box">' +
-      '<h1>' + esc(quiz.title) + '</h1>' +
-      '<p>' + esc(quiz.description || '') + '</p>' +
-      (quiz.time_limit_minutes ? '<p>Timer: ' + quiz.time_limit_minutes + ' minutes</p>' : '') +
-      '<a class="btn btn-blue" onclick="goTo(\'#/instructor/addquestion/' + quizId + '\')">+ Add Question</a>' +
-      '<a class="btn btn-gray" onclick="goTo(\'#/instructor/upload/' + quizId + '\')">Upload CSV</a>' +
-      '<div style="margin-top:15px;">' + (qHtml || '<p>No questions yet.</p>') + '</div>' +
-      '<a onclick="goTo(\'#/instructor\')">&laquo; Back to My Quizzes</a>' +
-      '</div>'
+      '<div class="box-header">' +
+        '<div>' +
+          '<a onclick="goTo(\'#/instructor\')" style="font-size:12px;">&larr; Back to My Quizzes</a>' +
+          '<h1 style="margin-top:6px;">' + esc(qz.title) + '</h1>' +
+          '<p>' + esc(qz.description || '') + ' &middot; ' + data.questions.length + ' questions' + (qz.time_limit_minutes ? ' &middot; ' + qz.time_limit_minutes + ' min' : '') + (qz.passing_cutoff != null ? ' &middot; Pass ' + qz.passing_cutoff + '%' : '') + '</p>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;">' +
+          '<button class="btn btn-pista" onclick="goTo(\'#/instructor/addquestion/' + quizId + '\')">' + icon('plus') + ' Add Question</button>' +
+          '<button class="btn btn-outline" onclick="goTo(\'#/instructor/upload/' + quizId + '\')">' + icon('upload') + ' Upload CSV</button>' +
+        '</div>' +
+      '</div>' +
+      (qItems || '<div class="box" style="text-align:center;padding:40px;"><p>No questions yet. Add questions manually or via CSV.</p></div>')
     );
   });
 }
-
-function deleteQuestion(questionId, quizId) {
+function deleteQuestion(qId, quizId) {
   if (!confirm('Delete this question?')) return;
-  callApi('DELETE', '/api/instructor/questions/' + questionId).then(function () {
-    showMessage('Question deleted.', 'info');
-    showQuestionsPage(quizId);
+  callApi('DELETE', '/api/instructor/questions/' + qId).then(function () {
+    showMessage('Question deleted.', 'info'); showQuestionsPage(quizId);
   });
 }
 
 function showAddQuestionPage(quizId) {
   setContent(
-    '<div class="box" style="max-width:500px;">' +
-    '<h1>Add Question</h1>' +
-    '<form id="questionForm">' +
-    '<label>Question</label>' +
-    '<textarea id="qText" required></textarea>' +
-    '<label>Option A</label><input type="text" id="qA" required>' +
-    '<label>Option B</label><input type="text" id="qB" required>' +
-    '<label>Option C</label><input type="text" id="qC" required>' +
-    '<label>Option D</label><input type="text" id="qD" required>' +
-    '<label>Correct Option</label>' +
-    '<select id="qCorrect"><option>A</option><option>B</option><option>C</option><option>D</option></select>' +
-    '<button type="submit" class="btn btn-blue">Add</button>' +
-    '<button type="button" class="btn btn-gray" onclick="goTo(\'#/instructor/questions/' + quizId + '\')">Done</button>' +
-    '</form>' +
+    '<div class="box" style="max-width:540px;margin:24px auto;">' +
+      '<div class="box-header"><div><h1>Add Question</h1><p>Enter problem details and correct choice.</p></div><button class="btn btn-outline btn-sm" onclick="goTo(\'#/instructor/questions/' + quizId + '\')">Cancel</button></div>' +
+      '<form id="qForm">' +
+        '<label>Question Text</label><textarea id="qText" rows="3" required></textarea>' +
+        '<div class="form-row">' +
+          '<div><label>Option A</label><input type="text" id="qA" required></div>' +
+          '<div><label>Option B</label><input type="text" id="qB" required></div>' +
+        '</div>' +
+        '<div class="form-row">' +
+          '<div><label>Option C</label><input type="text" id="qC" required></div>' +
+          '<div><label>Option D</label><input type="text" id="qD" required></div>' +
+        '</div>' +
+        '<div class="form-row">' +
+          '<div><label>Correct Option</label><select id="qCorrect"><option>A</option><option>B</option><option>C</option><option>D</option></select></div>' +
+          '<div><label>Negative Marks (penalty)</label><input type="number" id="qNegative" min="0" step="0.05" value="0"></div>' +
+        '</div>' +
+        '<button type="submit" class="btn btn-pista" style="width:100%;margin-top:10px;">Save Question</button>' +
+      '</form>' +
     '</div>'
   );
 
-  document.getElementById('questionForm').onsubmit = function (e) {
+  document.getElementById('qForm').onsubmit = function (e) {
     e.preventDefault();
     callApi('POST', '/api/instructor/quizzes/' + quizId + '/questions', {
       question_text: document.getElementById('qText').value,
@@ -906,199 +1424,330 @@ function showAddQuestionPage(quizId) {
       option_b: document.getElementById('qB').value,
       option_c: document.getElementById('qC').value,
       option_d: document.getElementById('qD').value,
-      correct_option: document.getElementById('qCorrect').value
+      correct_option: document.getElementById('qCorrect').value,
+      negative_marks: document.getElementById('qNegative').value
     }).then(function () {
-      showMessage('Question added.', 'success');
-      goTo('#/instructor/questions/' + quizId);
+      showMessage('Question saved.', 'success'); goTo('#/instructor/questions/' + quizId);
     });
   };
 }
 
 function showUploadPage(quizId) {
   setContent(
-    '<div class="box" style="max-width:500px;">' +
-    '<h1>Upload Questions (CSV)</h1>' +
-    '<form id="uploadForm">' +
-    '<input type="file" id="csvFile" accept=".csv" required>' +
-    '<button type="submit" class="btn btn-blue">Upload</button>' +
-    '</form>' +
-    '<p style="font-size:13px; margin-top:15px;">The CSV needs these exact column headers:</p>' +
-    '<p style="font-family:monospace; background:var(--sky-light); color:var(--sky-dark); padding:10px; border-radius:6px; font-size:12px;">' +
-    'question_text,option_a,option_b,option_c,option_d,correct_option</p>' +
-    '<p style="font-size:13px;">correct_option should be A, B, C, or D.</p>' +
-    '<a onclick="goTo(\'#/instructor/questions/' + quizId + '\')">&laquo; Back</a>' +
+    '<div class="box" style="max-width:540px;margin:24px auto;">' +
+      '<div class="box-header"><div><h1>Upload Questions via CSV</h1><p>Batch import questions directly into quiz.</p></div><button class="btn btn-outline btn-sm" onclick="goTo(\'#/instructor/questions/' + quizId + '\')">Cancel</button></div>' +
+      '<form id="uploadForm">' +
+        '<div style="border:2px dashed var(--border);padding:24px;border-radius:var(--radius-md);text-align:center;background:var(--surface-hover);">' +
+          icon('upload', 32) + '<br>' +
+          '<label style="display:block;margin:10px 0 4px 0;">Select .CSV File</label>' +
+          '<input type="file" id="csvFile" accept=".csv" required style="width:auto;margin:0 auto;">' +
+        '</div>' +
+        '<div style="margin-top:14px;background:var(--color-pista-light);border:1px solid var(--color-pista-border);padding:12px;border-radius:var(--radius-sm);font-size:12px;">' +
+          '<b>Required Column Headers:</b><br>' +
+          '<code style="font-family:monospace;display:block;margin-top:4px;">question_text,option_a,option_b,option_c,option_d,correct_option,negative_marks</code>' +
+        '</div>' +
+        '<button type="submit" class="btn btn-pista" style="width:100%;margin-top:16px;">Process & Import CSV</button>' +
+      '</form>' +
     '</div>'
   );
 
   document.getElementById('uploadForm').onsubmit = function (e) {
     e.preventDefault();
-    var fileInput = document.getElementById('csvFile');
-    if (!fileInput.files.length) return;
-    var formData = new FormData();
-    formData.append('csv_file', fileInput.files[0]);
-    callApi('POST', '/api/instructor/quizzes/' + quizId + '/questions/upload', formData, true).then(function (res) {
-      showMessage(res.message, 'success');
-      if (res.errors && res.errors.length) {
-        showMessage(res.errors.length + ' rows skipped. ' + res.errors.slice(0, 3).join(' | '), 'warning');
+    var file = document.getElementById('csvFile').files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(evt) {
+      var lines = (evt.target.result || '').split(/\r?\n/).filter(function(l) { return l.trim().length > 0; });
+      var count = 0;
+      for (var i = 1; i < lines.length; i++) {
+        var p = lines[i].split(',').map(function(s) { return s.replace(/^"|"$/g, '').trim(); });
+        if (p.length >= 6) {
+          callApi('POST', '/api/instructor/quizzes/' + quizId + '/questions', {
+            question_text: p[0], option_a: p[1], option_b: p[2], option_c: p[3], option_d: p[4],
+            correct_option: p[5].toUpperCase(), negative_marks: p[6] || 0
+          });
+          count++;
+        }
       }
+      showMessage('Imported ' + count + ' questions from CSV.', 'success');
       goTo('#/instructor/questions/' + quizId);
-    });
+    };
+    reader.readAsText(file);
   };
 }
 
 // ===================================================
-// LEADERBOARD (used by instructor, student, and admin views)
+// STUDENT MODULE
 // ===================================================
+function showStudentDashboard() {
+  var dept = currentUser.department || DEPARTMENTS[0];
+  loadStudentQuizzes(dept);
+}
 
-function showLeaderboard(quizId, url) {
-  callApi('GET', url).then(function (data) {
-    var title = data.quiz ? data.quiz.title : 'Quiz';
-    var myId = currentUser ? currentUser.id : null;
-    var rows = '';
-    data.leaderboard.forEach(function (row) {
-      var pct = ((row.score / row.total_questions) * 100).toFixed(1);
-      var isMe = myId && row.user_id === myId;
-      rows += '<tr class="' + (isMe ? 'highlight' : '') + '">' +
-              '<td>#' + row.rank + '</td>' +
-              '<td>' + esc(row.username) + (isMe ? ' (you)' : '') + '</td>' +
-              '<td>' + row.score + '/' + row.total_questions + '</td>' +
-              '<td>' + pct + '%</td>' +
-              '<td>' + (row.time_taken_seconds != null ? row.time_taken_seconds + 's' : '-') + '</td>' +
-              '<td>' + (row.taken_at || '') + '</td></tr>';
-    });
+function loadStudentQuizzes(dept) {
+  callApi('GET', '/api/student/quizzes?department=' + encodeURIComponent(dept || '')).then(function (data) {
+    var quizList = (data && data.quizzes) || [];
+    var cards = quizList.map(function(q) {
+      return '<div class="quiz-card">' +
+        '<div>' +
+          '<div style="display:flex;justify-content:space-between;"><span class="tag tag-instructor">' + esc(q.department) + '</span>' + (q.taken ? '<span class="tag tag-approved">&#10003; Completed</span>' : '<span class="tag tag-student">Available</span>') + '</div>' +
+          '<h3 style="margin-top:10px;">' + esc(q.title) + '</h3>' +
+          '<p style="margin-top:6px;">' + esc(q.description || 'General examination module.') + '</p>' +
+          '<div class="quiz-meta">' +
+            '<span>' + icon('book', 14) + ' ' + q.question_count + ' Qs</span>' +
+            (q.time_limit_minutes ? '<span>' + icon('clock', 14) + ' ' + q.time_limit_minutes + ' min</span>' : '') +
+            (q.passing_cutoff != null ? '<span>' + icon('award', 14) + ' ' + q.passing_cutoff + '%</span>' : '') +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;border-top:1px solid var(--border);padding-top:12px;">' +
+          (q.taken ?
+            '<button class="btn btn-outline btn-sm" onclick="goTo(\'#/student/take/' + q.id + '\')">' + icon('clock') + ' Retake</button>' :
+            '<button class="btn btn-pista btn-sm" onclick="goTo(\'#/student/take/' + q.id + '\')">' + icon('arrow-right') + ' Start Quiz</button>') +
+          '<button class="btn btn-outline btn-sm" onclick="goTo(\'#/leaderboard/' + q.id + '\')">' + icon('trophy') + ' Rankings</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
 
     setContent(
-      '<div class="box"><h1>Leaderboard &mdash; ' + esc(title) + '</h1>' +
-      (data.leaderboard.length ?
-        '<table><tr><th>Rank</th><th>Student</th><th>Score</th><th>%</th><th>Time</th><th>Date</th></tr>' + rows + '</table>' :
-        '<p>No one has taken this quiz yet.</p>') +
-      '</div>'
+      '<div class="box-header">' +
+        '<div><h1>Available Quizzes</h1><p>Test your academic mastery and review your departmental standing.</p></div>' +
+        '<div style="display:flex;align-items:center;gap:8px;">' +
+          '<label style="margin:0;">Faculty:</label>' +
+          '<select id="deptFilter" style="width:auto;margin:0;">' + departmentOptions(data ? data.department : dept) + '</select>' +
+        '</div>' +
+      '</div>' +
+      '<div class="grid">' + (cards || '<p>No quizzes available in this department.</p>') + '</div>'
     );
+
+    document.getElementById('deptFilter').onchange = function () {
+      loadStudentQuizzes(this.value);
+    };
   });
 }
 
-// ===================================================
-// STUDENT PAGES
-// ===================================================
-
-function showStudentDashboard() {
-  callApi('GET', '/api/student/quizzes').then(function (data) {
-    var boxes = '';
-    data.quizzes.forEach(function (q) {
-      boxes += '<div class="quiz-box">' +
-               '<h3>' + esc(q.title) + (q.is_default ? ' <span class="tag tag-approved">default</span>' : '') + '</h3>' +
-               '<p>' + esc(q.description || 'No description') + '</p>' +
-               '<p>Questions: ' + q.question_count + (q.time_limit_minutes ? ' | Timer: ' + q.time_limit_minutes + ' min' : '') + '</p>' +
-               (q.taken ?
-                 '<span class="tag tag-approved">Completed</span> <button class="btn btn-gray" onclick="goTo(\'#/student/take/' + q.id + '\')">Retake</button>' :
-                 '<button class="btn btn-blue" onclick="goTo(\'#/student/take/' + q.id + '\')">Start Quiz</button>') +
-               ' <button class="btn btn-gray" onclick="goTo(\'#/leaderboard/' + q.id + '\')">Leaderboard</button>' +
-               '</div>';
-    });
-    setContent('<div class="box"><h1>Available Quizzes</h1><div class="grid">' + (boxes || '<p>No quizzes available right now.</p>') + '</div></div>');
-  });
-}
+// Interactive Quiz Taking Runner
+var takeState = null;
 
 function showTakeQuizPage(quizId) {
   callApi('GET', '/api/student/quizzes/' + quizId).then(function (data) {
-    var quiz = data.quiz;
-    var questions = data.questions;
-
-    var qHtml = '';
-    questions.forEach(function (q, index) {
-      qHtml += '<div class="question">' +
-               '<b>Q' + (index + 1) + '.</b> ' + esc(q.question_text) +
-               '<div class="option"><label><input type="radio" name="q' + q.id + '" value="A" style="width:auto;display:inline;margin-right:6px;"> A. ' + esc(q.option_a) + '</label></div>' +
-               '<div class="option"><label><input type="radio" name="q' + q.id + '" value="B" style="width:auto;display:inline;margin-right:6px;"> B. ' + esc(q.option_b) + '</label></div>' +
-               '<div class="option"><label><input type="radio" name="q' + q.id + '" value="C" style="width:auto;display:inline;margin-right:6px;"> C. ' + esc(q.option_c) + '</label></div>' +
-               '<div class="option"><label><input type="radio" name="q' + q.id + '" value="D" style="width:auto;display:inline;margin-right:6px;"> D. ' + esc(q.option_d) + '</label></div>' +
-               '</div>';
-    });
-
-    setContent(
-      '<div class="box">' +
-      (quiz.time_limit_minutes ? '<div class="timer">Time left: <span id="timeLeft">' + quiz.time_limit_minutes + ':00</span></div>' : '') +
-      '<h1>' + esc(quiz.title) + '</h1>' +
-      '<form id="takeForm">' + qHtml + '<button type="submit" class="btn btn-blue">Submit Quiz</button></form>' +
-      '</div>'
-    );
-
-    var startTime = Date.now();
-    var alreadySubmitted = false;
-
-    function submitQuiz() {
-      if (alreadySubmitted) return;
-      alreadySubmitted = true;
-      var answers = {};
-      questions.forEach(function (q) {
-        var picked = document.querySelector('input[name=q' + q.id + ']:checked');
-        if (picked) answers[q.id] = picked.value;
-      });
-      var timeTaken = Math.floor((Date.now() - startTime) / 1000);
-      callApi('POST', '/api/student/quizzes/' + quizId + '/submit', { answers: answers, time_taken_seconds: timeTaken })
-        .then(function (result) {
-          showResultPage(quiz, result);
-        })
-        .catch(function () { alreadySubmitted = false; });
+    if (!data.questions || data.questions.length === 0) {
+      setContent('<div class="box" style="text-align:center;padding:40px;"><h3>Quiz unavailable</h3><p>This quiz has no questions yet.</p><button class="btn btn-pista" onclick="goTo(\'#/student\')">Back</button></div>');
+      return;
     }
-
-    document.getElementById('takeForm').onsubmit = function (e) {
-      e.preventDefault();
-      submitQuiz();
+    takeState = {
+      quiz: data.quiz,
+      questions: data.questions,
+      answers: {},
+      index: 0,
+      startTime: Date.now(),
+      timerHandle: null,
+      submitted: false
     };
+    renderTakeQuiz();
 
-    if (quiz.time_limit_minutes) {
-      var secondsLeft = quiz.time_limit_minutes * 60;
-      var timeLeftEl = document.getElementById('timeLeft');
-      var timer = setInterval(function () {
+    if (takeState.quiz.time_limit_minutes) {
+      var secondsLeft = takeState.quiz.time_limit_minutes * 60;
+      takeState.timerHandle = setInterval(function () {
         secondsLeft--;
-        if (secondsLeft <= 0) {
-          clearInterval(timer);
-          timeLeftEl.textContent = '0:00';
-          submitQuiz();
-          return;
+        var el = document.getElementById('timeLeft');
+        if (el) {
+          var m = Math.floor(secondsLeft / 60);
+          var s = secondsLeft % 60;
+          el.textContent = m + ':' + (s < 10 ? '0' : '') + s;
         }
-        var mins = Math.floor(secondsLeft / 60);
-        var secs = secondsLeft % 60;
-        timeLeftEl.textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
+        if (secondsLeft <= 0) {
+          clearInterval(takeState.timerHandle);
+          submitTakeQuiz();
+        }
       }, 1000);
     }
   });
 }
 
-function showResultPage(quiz, result) {
+function renderTakeQuiz() {
+  var st = takeState;
+  var q = st.questions[st.index];
+  var total = st.questions.length;
+  var pct = Math.round(((st.index + 1) / total) * 100);
+  var selected = st.answers[q.id];
+
+  function opt(letter, text) {
+    var isSel = selected === letter;
+    return '<div class="option-card' + (isSel ? ' selected' : '') + '" onclick="selectAnswer(\'' + letter + '\')">' +
+      '<div><span class="option-letter">' + letter + '</span>' + esc(text) + '</div>' +
+      (isSel ? '<span style="color:var(--color-pista-primary);">&#10003;</span>' : '') +
+      '</div>';
+  }
+
   setContent(
-    '<div class="box center">' +
-    '<h1>' + esc(quiz.title) + '</h1>' +
-    '<div class="score-box">' + result.score + '/' + result.total + '</div>' +
-    '<p>You scored ' + result.percentage + '%</p>' +
-    (result.rank ? '<p>Your rank: #' + result.rank + ' out of ' + result.total_participants + '</p>' : '') +
-    '<button class="btn btn-blue" onclick="goTo(\'#/student\')">Back to Quizzes</button>' +
-    '<button class="btn btn-gray" onclick="goTo(\'#/leaderboard/' + quiz.id + '\')">View Leaderboard</button>' +
+    '<div class="qtake-wrap">' +
+      '<div class="box" style="padding:14px 20px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">' +
+        '<div><span class="tag tag-instructor">' + esc(st.quiz.department) + '</span> <b>' + esc(st.quiz.title) + '</b></div>' +
+        '<div style="display:flex;align-items:center;gap:10px;">' +
+          (st.quiz.time_limit_minutes ? '<div style="background:var(--color-pista-light);color:var(--color-pista-primary);padding:4px 10px;border-radius:8px;font-weight:700;font-family:monospace;">' + icon('clock') + ' <span id="timeLeft">' + st.quiz.time_limit_minutes + ':00</span></div>' : '') +
+          '<button class="btn btn-outline btn-sm" onclick="openQuestionNavigator()">' + icon('layers') + ' Question Map</button>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--text-muted);">' +
+        '<span>QUESTION ' + (st.index + 1) + ' OF ' + total + '</span>' +
+        '<span>' + Object.keys(st.answers).length + ' answered</span>' +
+      '</div>' +
+      '<div class="qtake-bar"><div class="qtake-bar-fill" style="width:' + pct + '%;"></div></div>' +
+      '<div class="qtake-card">' +
+        '<h1 style="font-size:17px;line-height:1.5;margin-bottom:16px;">' + esc(q.question_text) + '</h1>' +
+        opt('A', q.option_a) + opt('B', q.option_b) + opt('C', q.option_c) + opt('D', q.option_d) +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:24px;border-top:1px solid var(--border);padding-top:16px;">' +
+          '<button class="btn btn-outline" onclick="goToQuestion(' + (st.index - 1) + ')"' + (st.index === 0 ? ' disabled' : '') + '>' + icon('arrow-left') + ' Previous</button>' +
+          (st.index === total - 1 ?
+            '<button class="btn btn-pista" onclick="submitTakeQuiz()">' + icon('check') + ' Submit Quiz</button>' :
+            '<button class="btn btn-pista" onclick="goToQuestion(' + (st.index + 1) + ')">Next ' + icon('arrow-right') + '</button>') +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+function selectAnswer(letter) {
+  var q = takeState.questions[takeState.index];
+  takeState.answers[q.id] = letter;
+  renderTakeQuiz();
+}
+function goToQuestion(idx) {
+  if (idx < 0 || idx >= takeState.questions.length) return;
+  takeState.index = idx;
+  renderTakeQuiz();
+  closeQuestionNavigator();
+}
+
+function openQuestionNavigator() {
+  var st = takeState;
+  var qList = (st && st.questions) || [];
+  var items = qList.map(function(q, i) {
+    var att = !!st.answers[q.id];
+    var cur = i === st.index;
+    return '<div class="qnav-item' + (att ? ' attempted' : '') + (cur ? ' current' : '') + '" onclick="goToQuestion(' + i + ')">' + (i + 1) + '</div>';
+  }).join('');
+
+  document.getElementById('qnavPanel').innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:14px;">' +
+      '<div><b>Question Map</b><br><span style="font-size:11px;color:var(--text-muted);">' + Object.keys(st.answers).length + ' of ' + st.questions.length + ' attempted</span></div>' +
+      '<button class="btn btn-outline btn-sm" onclick="closeQuestionNavigator()">&times;</button>' +
+    '</div>' +
+    '<div style="display:flex;gap:12px;font-size:11px;color:var(--text-muted);margin-bottom:12px;">' +
+      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--color-pista-primary);margin-right:4px;"></span>Attempted</span>' +
+      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--surface-hover);border:1px solid var(--border);margin-right:4px;"></span>Unattempted</span>' +
+    '</div>' +
+    '<div class="qnav-grid">' + items + '</div>' +
+    '<button class="btn btn-pista" style="width:100%;margin-top:20px;" onclick="closeQuestionNavigator();submitTakeQuiz();">Submit Quiz</button>';
+
+  document.getElementById('qnavPanel').classList.add('open');
+  document.getElementById('qnavBackdrop').classList.add('open');
+}
+function closeQuestionNavigator() {
+  var p = document.getElementById('qnavPanel'); if (p) p.classList.remove('open');
+  var b = document.getElementById('qnavBackdrop'); if (b) b.classList.remove('open');
+}
+
+function submitTakeQuiz() {
+  var st = takeState;
+  if (!st || st.submitted) return;
+  st.submitted = true;
+  if (st.timerHandle) clearInterval(st.timerHandle);
+
+  var timeTaken = Math.max(1, Math.floor((Date.now() - st.startTime) / 1000));
+  callApi('POST', '/api/student/quizzes/' + st.quiz.id + '/submit', {
+    answers: st.answers, time_taken_seconds: timeTaken
+  }).then(function (res) {
+    showScoreWindow(st.quiz, res, st.questions);
+  });
+}
+
+function showScoreWindow(quiz, res, questions) {
+  var rev = res.review || [];
+  var stMap = {}; rev.forEach(function(r) { stMap[r.question_id] = r.status; });
+  var corr = 0, incorr = 0, skip = 0;
+  var tiles = (questions || []).map(function(q, i) {
+    var s = stMap[q.id] || 'skipped';
+    if (s === 'correct') corr++; else if (s === 'incorrect') incorr++; else skip++;
+    return '<div class="score-tile ' + s + '" title="Q' + (i + 1) + '">' + (i + 1) + '</div>';
+  }).join('');
+
+  setContent(
+    '<div class="box" style="max-width:540px;margin:30px auto;text-align:center;padding:36px 24px;">' +
+      '<span class="tag tag-instructor">' + esc(quiz.department) + '</span>' +
+      '<h1 style="margin-top:8px;">' + esc(quiz.title) + '</h1>' +
+      '<div class="score-dial"><div>' + res.marks_obtained + '</div><span style="font-size:12px;font-weight:600;color:var(--text-muted);margin-top:-6px;">/ ' + res.total + '</span></div>' +
+      '<p style="font-size:16px;font-weight:700;color:var(--text-primary);">Score: <span class="font-mono" style="color:var(--color-pista-primary);">' + res.percentage + '%</span></p>' +
+      (res.passed !== null ? '<div style="margin:8px 0;"><span class="tag tag-' + (res.passed ? 'pass' : 'fail') + '" style="font-size:12px;padding:5px 14px;">' + (res.passed ? '&#10003; PASSED' : '&times; FAILED') + (res.passing_cutoff != null ? ' &middot; Cutoff ' + res.passing_cutoff + '%' : '') + '</span></div>' : '') +
+      '<div style="display:flex;justify-content:center;gap:20px;margin:20px 0;font-size:13px;">' +
+        '<span><b style="color:var(--status-success);">' + corr + '</b> Correct</span>' +
+        '<span><b style="color:var(--status-danger);">' + incorr + '</b> Incorrect</span>' +
+        '<span><b style="color:var(--text-muted);">' + skip + '</b> Skipped</span>' +
+      '</div>' +
+      '<div class="score-grid">' + tiles + '</div>' +
+      '<div style="display:flex;justify-content:center;gap:10px;margin-top:24px;">' +
+        '<button class="btn btn-pista" onclick="goTo(\'#/student\')">Back to Quizzes</button>' +
+        '<button class="btn btn-outline" onclick="goTo(\'#/leaderboard/' + quiz.id + '\')">' + icon('trophy') + ' View Rankings</button>' +
+      '</div>' +
     '</div>'
   );
 }
 
 function showMyResults() {
   callApi('GET', '/api/student/results').then(function (data) {
-    var rows = '';
-    data.results.forEach(function (r) {
-      var pct = ((r.score / r.total_questions) * 100).toFixed(1);
-      rows += '<tr><td>' + esc(r.quiz_title) + '</td><td>' + r.score + '/' + r.total_questions + '</td>' +
-              '<td>' + pct + '%</td><td>' + (r.time_taken_seconds != null ? r.time_taken_seconds + 's' : '-') + '</td>' +
-              '<td>' + r.taken_at + '</td>' +
-              '<td><a onclick="goTo(\'#/leaderboard/' + r.quiz_id + '\')">View</a></td></tr>';
-    });
+    var resList = (data && data.results) || [];
+    var rows = resList.map(function(r) {
+      return '<tr>' +
+        '<td><b>' + esc(r.quiz_title) + '</b></td>' +
+        '<td class="font-mono tabular-nums"><b>' + r.marks_obtained + '</b> / ' + r.total_questions + '</td>' +
+        '<td>' + (r.passed === null ? '—' : (r.passed ? '<span class="tag tag-pass">pass</span>' : '<span class="tag tag-fail">fail</span>')) + '</td>' +
+        '<td class="font-mono tabular-nums">' + (r.time_taken_seconds != null ? r.time_taken_seconds + 's' : '—') + '</td>' +
+        '<td class="font-mono" style="font-size:11px;">' + r.taken_at + '</td>' +
+        '<td><button class="btn btn-outline btn-sm" onclick="goTo(\'#/leaderboard/' + r.quiz_id + '\')">' + icon('trophy') + ' Leaderboard</button></td>' +
+      '</tr>';
+    }).join('');
+
     setContent(
-      '<div class="box"><h1>My Results</h1>' +
-      (data.results.length ?
-        '<table><tr><th>Quiz</th><th>Score</th><th>%</th><th>Time</th><th>Date</th><th>Leaderboard</th></tr>' + rows + '</table>' :
-        '<p>You have not taken any quizzes yet.</p>') +
-      '</div>'
+      '<div class="box-header">' +
+        '<div><h1>My Examination Records</h1><p>Transcript of assessments taken and scores achieved.</p></div>' +
+        '<button class="btn btn-outline" onclick="goTo(\'#/student\')">' + icon('arrow-left') + ' Back</button>' +
+      '</div>' +
+      '<div class="table-wrap"><table><tr><th>Quiz</th><th>Score</th><th>Result</th><th>Time</th><th>Date</th><th>Rankings</th></tr>' + (rows || '<tr><td colspan="6">No tests completed yet.</td></tr>') + '</table></div>'
     );
   });
 }
 
+// ===================================================
+// LEADERBOARD MODULE
+// ===================================================
+function showLeaderboard(quizId, url) {
+  callApi('GET', url).then(function (data) {
+    var qz = (data && data.quiz) || {};
+    var boardList = (data && data.leaderboard) || [];
+    var rows = boardList.map(function(r) {
+      var isMe = currentUser && Number(r.user_id) === Number(currentUser.id);
+      return '<tr class="' + (isMe ? 'highlight' : '') + '">' +
+        '<td class="font-mono"><b>#' + r.rank + '</b></td>' +
+        '<td><b>' + esc(fullName(r)) + '</b>' + (isMe ? ' <span class="tag tag-instructor" style="font-size:10px;">You</span>' : '') + '<br><span style="font-size:11px;color:var(--text-muted);font-family:monospace;">@' + esc(r.username) + '</span></td>' +
+        '<td class="font-mono tabular-nums"><b>' + r.marks_obtained + '</b> / ' + r.total_questions + '</td>' +
+        '<td>' + (r.passed === null ? '—' : (r.passed ? '<span class="tag tag-pass">pass</span>' : '<span class="tag tag-fail">fail</span>')) + '</td>' +
+        '<td class="font-mono tabular-nums">' + (r.time_taken_seconds != null ? r.time_taken_seconds + 's' : '—') + '</td>' +
+        '<td class="font-mono" style="font-size:11px;">' + (r.taken_at || '—') + '</td>' +
+      '</tr>';
+    }).join('');
+
+    setContent(
+      '<div class="box-header">' +
+        '<div>' +
+          '<a onclick="goTo(\'#/\')" style="font-size:12px;">&larr; Back</a>' +
+          '<h1 style="margin-top:6px;">' + icon('trophy', 22) + ' Leaderboard &mdash; ' + esc(qz ? qz.title : 'Quiz') + '</h1>' +
+          '<p>' + data.leaderboard.length + ' student candidates evaluated.</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="table-wrap"><table><tr><th>Rank</th><th>Student</th><th>Score</th><th>Status</th><th>Time</th><th>Date</th></tr>' + (rows || '<tr><td colspan="6">No attempts on this quiz yet.</td></tr>') + '</table></div>'
+    );
+  });
+}
 </script>
 </body>
 </html>

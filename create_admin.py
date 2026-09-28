@@ -9,9 +9,10 @@ import mysql.connector
 from werkzeug.security import generate_password_hash
 
 DB_CONFIG = {
-    "host": "localhost",
-    "user": "root",
-    "password": "Ankit@123",
+    "host": "mysql-399982eb-quiz-management.f.aivencloud.com",
+    "user": "avnadmin",
+    "port": 25197,
+    "password": "AVNS_YK6_DeQmwJt7qSfRrWc",
     "database": "equiz",
 }
 

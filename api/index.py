@@ -15,9 +15,9 @@ app.secret_key = "123456789"
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
 DB_CONFIG = {
-    "host": "localhost",
-    "user": "root",
-    "password": "Ankit@123",
+    "host": "mysql-399982eb-quiz-management.f.aivencloud.com",
+    "user": "avnadmin",
+    "password": "AVNS_YK6_DeQmwJt7qSfRrWc",
     "database": "equiz",
 }
 

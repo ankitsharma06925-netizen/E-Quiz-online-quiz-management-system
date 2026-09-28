@@ -17,6 +17,7 @@ app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 DB_CONFIG = {
     "host": "mysql-399982eb-quiz-management.f.aivencloud.com",
     "user": "avnadmin",
+    "port": 25197,
     "password": "AVNS_YK6_DeQmwJt7qSfRrWc",
     "database": "equiz",
 }
